@@ -48,4 +48,14 @@ contract CryptoDevs is ERC721Enumerable, Ownable {
         _baseTokenURI = baseURI;
         whitelist = IWhitelist(whitelistContract);
      }
+
+    /**
+     * @dev startPresale starts a presale for the whitelisted addresses
+     */
+     function startPresale() public onlyOwner{
+        presaleStarted = true;
+        // Set presaleEnded time as current timestamp + 5 minutes
+        // Solidity has cool syntax for timestamps (seconds, minutes, hours, days, years)
+        presaleEnded = block.timestamp + 5 minutes;
+     }
 }
