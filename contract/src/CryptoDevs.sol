@@ -57,5 +57,20 @@ contract CryptoDevs is ERC721Enumerable, Ownable {
         // Set presaleEnded time as current timestamp + 5 minutes
         // Solidity has cool syntax for timestamps (seconds, minutes, hours, days, years)
         presaleEnded = block.timestamp + 5 minutes;
-     }
+    }
+
+    /**
+     * @dev presaleMint allows a user to mint one NFT per transaction during the presale.
+     */
+    function presaleMint() public payable onlyWhenNotPaused {
+        require(presaleStarted && block.timestamp < presaleEnded, "Presale is not running");
+        require(whitelist.addressWhitelisted(msg.sender), "You are not whitelisted");
+        require(tokenIds < maxTokenIds, "Exceeded maximum Crypto Devs supply");
+        require(msg.value >= _price, "Ether sent is not enough");
+        tokenIds += 1;
+        //_safeMint is a safer version of the _mint function as it ensures that
+        // if the address being minted to is a contract, then it knows how to deal with ERC721 tokens
+        // If the address being minted to is not a contract, it works the same way as _mint
+        _safeMint(msg.sender, tokenIds);
+    }
 }
