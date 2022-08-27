@@ -80,7 +80,7 @@ contract CryptoDevs is ERC721Enumerable, Ownable {
     function mint() public payable onlyWhenNotPaused {
         require(presaleStarted && block.timestamp >= presaleEnded, "Presale has not ended yet");
         require(tokenIds < maxTokenIds, "Exceed maximum Crypto Devs supply");
-        require(msg.value >= "Ether sent is not enough");
+        require(msg.value >= _price,"Ether sent is not enough");
         tokenIds += 1;
         _safeMint(msg.sender, tokenIds);
     }
