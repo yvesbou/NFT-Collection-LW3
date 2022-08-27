@@ -25,8 +25,7 @@ When having a folder structure like this:
 ```
 - myrepo
     - .git
-    - contract
-        - foundry project
+    - contract (foundry project)
     - frontend
 ```
-Meaning, you deleted the .git file in your foundry project, which was automatically setup, and you work from a .git file in the main project repo, because you wanted to have frontend and contract in the same git repository, forge install will setup .gitmodules in the myrepo folder, instead the contract folder.
+Meaning, you deleted the .git file in your foundry project, which was automatically setup, and you work from a .git file in the main project repo, because you wanted to have frontend and contract in the same git repository, `forge install` will setup .gitmodules in the myrepo folder outside of the contract folder. Make sure to copy it over to the existing .gitmodules file inside the contract folder.
