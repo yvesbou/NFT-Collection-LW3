@@ -4,6 +4,8 @@ pragma solidity ^0.8.13;
 // solidity settings lost, add them again...
 
 import "forge-std/Test.sol";
+import "forge-std/console.sol";
+
 import "src/CryptoDevs.sol";
 import "src/IWhitelist.sol";
 
@@ -31,17 +33,18 @@ contract CryptoDevsTest is Test {
 
     function testPresaleStarted() public {
         cryptoDevs.startPresale();
-        assertEq(cryptoDevs.presaleStarted, true);
+        bool started = cryptoDevs.presaleStarted();
+        assertEq(started, true);
     }
 
     function testPresaleMint() public {
 
     }
 
-    function testPresaleMintFailsPeriodOver() public {
-        cryptoDevs.startPresale();
-        uint256 timePresaleEnded = block.timestamp + 5 minutes + 1 seconds;
-        vm.rollFork(timePresaleEnded);
-        assertEq();
-    }
+    // function testPresaleMintFailsPeriodOver() public {
+    //     cryptoDevs.startPresale();
+    //     uint256 timePresaleEnded = block.timestamp + 5 minutes + 1 seconds;
+    //     vm.rollFork(timePresaleEnded);
+    //     // asserEq();
+    // }
 }
