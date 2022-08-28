@@ -17,7 +17,12 @@ interface CheatCodes {
 contract CryptoDevsTest is Test {
     CryptoDevs cryptoDevs;
     address deployer;
+    // contract address on goerli
     address whitelistContract = 0x61390Fc02A4c21Bf4A6A60A03B287706A81b0489;
+    // whitelisted addresses in contract deployed on goerli (contract misses state which stores all addresses)
+    address[3] whitelistedAddresses = [0x26a58e69f3FF059191d5a72764eD795779Cb1221,
+                                       0x23E5BBFD0A97b93EC889C097A3d9C581391603Da,
+                                       0x19c170541c7d51457E2800B4cB3a76414dE88De3];
     uint256 goerliFork;
 
     // need to create a fork
@@ -38,7 +43,7 @@ contract CryptoDevsTest is Test {
     }
 
     function testPresaleMint() public {
-
+        
     }
 
     // function testPresaleMintFailsPeriodOver() public {
