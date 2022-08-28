@@ -9,3 +9,4 @@ out/
 
 # other
 node_modules
+.env
