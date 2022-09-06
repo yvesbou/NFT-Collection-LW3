@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "openzeppelin-contracts/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IWhitelist.sol";
 
 contract CryptoDevs is ERC721Enumerable, Ownable {
@@ -33,7 +33,7 @@ contract CryptoDevs is ERC721Enumerable, Ownable {
     // timestamp for when presale would end
     uint256 public presaleEnded;
 
-    modifier onlyWhenNotPaused {
+    modifier onlyWhenNotPaused() {
         require(!_paused, "Contract currently paused");
         _;
     }
@@ -44,15 +44,17 @@ contract CryptoDevs is ERC721Enumerable, Ownable {
      * Constructor for Crypto Devs takes in the baseURI to set _baseTokenURI for the collection.
      * It also initializes an instance of whitelist interface.
      */
-     constructor (string memory baseURI, address whitelistContract) ERC721("Crypto Devs", "CD") {
+    constructor(string memory baseURI, address whitelistContract)
+        ERC721("Crypto Devs", "CD")
+    {
         _baseTokenURI = baseURI;
         whitelist = IWhitelist(whitelistContract);
-     }
+    }
 
     /**
      * @dev startPresale starts a presale for the whitelisted addresses
      */
-     function startPresale() public onlyOwner{
+    function startPresale() public onlyOwner {
         presaleStarted = true;
         // Set presaleEnded time as current timestamp + 5 minutes
         // Solidity has cool syntax for timestamps (seconds, minutes, hours, days, years)
@@ -63,8 +65,14 @@ contract CryptoDevs is ERC721Enumerable, Ownable {
      * @dev presaleMint allows a user to mint one NFT per transaction during the presale.
      */
     function presaleMint() public payable onlyWhenNotPaused {
-        require(presaleStarted && block.timestamp < presaleEnded, "Presale is not running");
-        require(whitelist.addressWhitelisted(msg.sender), "You are not whitelisted");
+        require(
+            presaleStarted && block.timestamp < presaleEnded,
+            "Presale is not running"
+        );
+        require(
+            whitelist.addressWhitelisted(msg.sender),
+            "You are not whitelisted"
+        );
         require(tokenIds < maxTokenIds, "Exceeded maximum Crypto Devs supply");
         require(msg.value >= _price, "Ether sent is not enough");
         tokenIds += 1;
@@ -76,11 +84,14 @@ contract CryptoDevs is ERC721Enumerable, Ownable {
 
     /**
      * @dev mint allows a user to mint 1 NFT per transaction after the presale has ended
-    */
+     */
     function mint() public payable onlyWhenNotPaused {
-        require(presaleStarted && block.timestamp >= presaleEnded, "Presale has not ended yet");
+        require(
+            presaleStarted && block.timestamp >= presaleEnded,
+            "Presale has not ended yet"
+        );
         require(tokenIds < maxTokenIds, "Exceed maximum Crypto Devs supply");
-        require(msg.value >= _price,"Ether sent is not enough");
+        require(msg.value >= _price, "Ether sent is not enough");
         tokenIds += 1;
         _safeMint(msg.sender, tokenIds);
     }
@@ -88,27 +99,29 @@ contract CryptoDevs is ERC721Enumerable, Ownable {
     /**
      * @dev _baseURI overrides the Openzeppelin's ERC721 implementation which by default
      * returns an empty string for the baseURI
-    */
+     */
     function _baseURI() internal view virtual override returns (string memory) {
         return _baseTokenURI;
     }
 
     /**
      * @dev setPaused makes the contract paused or unpaused
-    */
+     */
     function setPaused(bool val) public onlyOwner {
         _paused = val;
     }
 
     /**
-     * @dev withdraw sends all the ether in the contract 
+     * @dev withdraw sends all the ether in the contract
      * to the owner of the contract
-    */
+     */
     function withdraw() public onlyOwner {
         // owner() returns the address of the current owner (part of Ownable.sol)
         address _owner = owner();
         uint256 amount = address(this).balance;
-        (bool sent, ) = _owner.call{value: amount}("Revenue from NFT Crypto Devs Sale");
+        (bool sent, ) = _owner.call{value: amount}(
+            "Revenue from NFT Crypto Devs Sale"
+        );
         require(sent, "Failed to send Ether");
     }
 

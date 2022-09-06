@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-// solidity settings lost, add them again...
-
 import "forge-std/Test.sol";
 import "forge-std/console.sol";
 
@@ -11,7 +9,7 @@ import "src/IWhitelist.sol";
 
 interface CheatCodes {
     // Gets address for a given private key, (privateKey) => (address)
-   function addr(uint256) external returns (address);
+    function addr(uint256) external returns (address);
 }
 
 contract CryptoDevsTest is Test {
@@ -20,9 +18,11 @@ contract CryptoDevsTest is Test {
     // contract address on goerli
     address whitelistContract = 0x61390Fc02A4c21Bf4A6A60A03B287706A81b0489;
     // whitelisted addresses in contract deployed on goerli (contract misses state which stores all addresses)
-    address[3] whitelistedAddresses = [0x26a58e69f3FF059191d5a72764eD795779Cb1221,
-                                       0x23E5BBFD0A97b93EC889C097A3d9C581391603Da,
-                                       0x19c170541c7d51457E2800B4cB3a76414dE88De3];
+    address[3] whitelistedAddresses = [
+        0x26a58e69f3FF059191d5a72764eD795779Cb1221,
+        0x23E5BBFD0A97b93EC889C097A3d9C581391603Da,
+        0x19c170541c7d51457E2800B4cB3a76414dE88De3
+    ];
     uint256 goerliFork;
 
     // need to create a fork
@@ -43,7 +43,10 @@ contract CryptoDevsTest is Test {
     }
 
     function testPresaleMint() public {
-        
+        vm.prank(whitelistedAddresses[0]);
+        // how to send some ether with the transaction?
+        cryptoDevs.presaleMint();
+        // how to assert?
     }
 
     // function testPresaleMintFailsPeriodOver() public {
