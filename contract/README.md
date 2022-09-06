@@ -29,13 +29,15 @@ Note:
 When having a folder structure like this:
 
 ```
-- myrepo
+- NFT-Collection-LW3
     - .git
     - contract (foundry project)
     - frontend
 ```
 
-Meaning, you deleted the `.git` file in your foundry project, which was automatically setup, and you work from a .git file in the main project repo, because you wanted to have frontend and contract in the same git repository, `forge install` will setup `.gitmodules` in the myrepo folder outside of the contract folder. Make sure to copy it over to the existing `.gitmodules` file inside the contract folder.
+Meaning, you deleted the `.git` file in your foundry project, which was automatically setup, and you work from a .git file in the main project repo, because you wanted to have frontend and contract in the same git repository, `forge install` will setup `.gitmodules` in the NFT-Collection-LW3 folder outside of the contract folder. Make sure to copy it over to the existing `.gitmodules` file inside the contract folder.
+
+If you get warnings like `... not found: File import callback not supported` make sure to open the project with VS Code not at the root (NFT-Collection-LW3) but on the contract level. Furthermore, follow the next chapter as well to prevent warnings from solidity.
 
 ### VS Code Warnings
 
