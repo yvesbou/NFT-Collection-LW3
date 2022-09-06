@@ -63,3 +63,5 @@ Inside this file make sure to have at least this (ofc you can add your flavor to
       ],
 }
 ```
+
+Solution for settings found [here](https://github.com/foundry-rs/foundry/issues/2019).
