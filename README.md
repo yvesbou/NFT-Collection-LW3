@@ -4,5 +4,6 @@
 This is my code created with the LearnWeb3DAO course.
 
 To challenge myself more, I decided to
+- create the Frontend myself
 - work with Foundry instead of Hardhat
 - write tests (including fork-testing)
