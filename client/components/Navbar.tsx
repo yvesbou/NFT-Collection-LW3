@@ -14,8 +14,10 @@ const Container = styled.div`
 	/* Layout */
 	display: flex;
 	flex-direction: row;
-	justify-content: right;
-	align-items: right;
+	align-items: flex-end;
+	justify-content: flex-end;
+	background-color: blue; 
+	
 `
 
 
