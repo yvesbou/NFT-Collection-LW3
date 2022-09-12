@@ -5,7 +5,7 @@ import { ConnectButton } from '@rainbow-me/rainbowkit';
 const Navbar: FC = () => {
     return (
 		<Container>
-			<TitleNavbar>CryptoDevs</TitleNavbar>
+			<TitleNavbar>💻 CryptoDevs</TitleNavbar>
 			<ConnectButton />
 		</Container>)
 }
@@ -22,6 +22,7 @@ const Container = styled.div`
 
 const TitleNavbar = styled.div`
 	font-size: 30px;
+    font-weight: 900;
 `
 
 

@@ -25,10 +25,8 @@ const Container = styled.div`
 const Title = styled.div`
     display: flex;
     justify-content: center;
-    // background-color: blue;
     padding: 20px;
     margin-top: 110px;
-    font-family: 'Lato';
     font-weight: 900;
     font-size: 6rem;
 `
@@ -36,7 +34,6 @@ const Title = styled.div`
 const Highlight = styled.div`
     display: flex;
     justify-content: center;
-    font-family: 'Lato';
     font-weight: 900;
     font-size: 6rem;
     background: -webkit-linear-gradient(30deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
