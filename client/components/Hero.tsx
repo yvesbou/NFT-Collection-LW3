@@ -9,6 +9,7 @@ const Hero: FC = () => {
                 crypto devs
             </Title>
             <Highlight>NFT collection</Highlight>
+            <ActionItem><Mint onClick={()=>console.log("mint")}>mint</Mint></ActionItem>
         </Container>)
 }
 
@@ -19,14 +20,13 @@ const Container = styled.div`
     justify-content: center;
     align-content: center;
     height: 90%;
-    // background-color: red;
 `
 
 const Title = styled.div`
     display: flex;
     justify-content: center;
     padding: 20px;
-    margin-top: 110px;
+    margin-top: 90px;
     font-weight: 900;
     font-size: 6rem;
 `
@@ -40,5 +40,29 @@ const Highlight = styled.div`
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 `
+
+const ActionItem = styled.div`
+    margin: 20px;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+`
+
+const Mint = styled.button`
+    padding: 15px;
+    font-size: 2rem;
+    // font-weight: 600;
+    color: white;
+    background: -webkit-linear-gradient(10deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    border-radius: 12px;
+    border: transparent;
+    &:hover {
+        transition: 0.3s ease-out;
+        transform: scale(1.05) perspective(1px)
+    }
+`
+
+
 
 export default Hero;
