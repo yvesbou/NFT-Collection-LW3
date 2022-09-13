@@ -1,11 +1,38 @@
-import { FC } from "react"
+import { FC, useEffect, useState } from "react"
 import styled from "styled-components";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccount, useContractRead } from "wagmi";
+// import contractInterface from '../contract-abi.json'; <- deploy and describe path
+
+
+const contractConfig = {
+	addressOrName: '0x...',
+	contractInterface: contractInterface,
+};
 
 const Navbar: FC = () => {
+	// states
+	const [isOwner, setIsOwner] = useState(false);
+	const { isConnected } = useAccount();
+
+	// wagmi hooks
+	const { data: isOwnerContractData } = useContractRead({
+		...contractConfig,
+		functionName: 'getOwnerAddress',
+		watch: true,
+	  });
+
+	// react hooks
+	useEffect(() => {
+		if (isOwnerContractData) {
+		  setIsOwner(isOwnerContractData.toNumber());
+		}
+	  }, [isOwnerContractData])
+
     return (
 		<Container>
 			<TitleNavbar>💻 CryptoDevs</TitleNavbar>
+			{isConnected && isOwner && (<>Only Owner</>)}
 			<ConnectButton />
 		</Container>)
 }
