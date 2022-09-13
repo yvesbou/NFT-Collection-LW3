@@ -18,7 +18,7 @@ const Navbar: FC = () => {
 	// wagmi hooks
 	const { data: isOwnerContractData } = useContractRead({
 		...contractConfig,
-		functionName: 'getOwnerAddress',
+		functionName: 'owner',
 		watch: true,
 	  });
 
