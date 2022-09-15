@@ -1,5 +1,12 @@
 # Contracts
 
+### Deployed Contracts
+
+| Contract                | Network | Contract address                                                                                                                  |
+| ----------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| CryptoDevsNFTCollection | Goerli  | [0x96788D3aA03B6afAE42F15c059934ac53094Aca8](https://goerli.etherscan.io/address/0x96788d3aa03b6afae42f15c059934ac53094aca8#code  |
+| WhitelistContract       | Goerli  | [0x61390Fc02A4c21Bf4A6A60A03B287706A81b0489](https://goerli.etherscan.io/address/0x61390fc02a4c21bf4a6a60a03b287706a81b0489#code) |
+
 ### Project built with Foundry
 
 Start your own Foundry Project with:
@@ -89,7 +96,7 @@ Compiler run failed
 error[6275]: ParserError: Source "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol" not found: File not found.
 ```
 
-We need to add additionally a remappings.txt file at the root of the foundry project.
+We need to add additionally a `remappings.txt` file at the root of the foundry project.
 
 ```.txt
 ds-test/=lib/forge-std/lib/ds-test/src/
