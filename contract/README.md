@@ -16,7 +16,7 @@ forge init
 # To give our shell access to our environment variables
 source .env
 # To deploy and verify our contract
-forge script script/Whitelist.s.sol:WhitelistScript --rpc-url $GOERLI_RPC_URL  --private-key $GOERLI_PRIVATE_KEY --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY -vvvv
+forge script script/CryptoDevs.s.sol:CryptoDevsScript --rpc-url $GOERLI_RPC_URL  --private-key $GOERLI_PRIVATE_KEY --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY -vvvv
 
 ```
 
