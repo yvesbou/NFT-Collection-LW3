@@ -20,6 +20,8 @@ forge script script/CryptoDevs.s.sol:CryptoDevsScript --rpc-url $GOERLI_RPC_URL 
 
 ```
 
+## Troubleshooting
+
 ### Third Party Libraries in Foundry Project
 
 Install dependencies Foundry natively via Github
@@ -77,3 +79,22 @@ Inside this file make sure to have at least this (ofc you can add your flavor to
 ```
 
 Solution for settings found [here](https://github.com/foundry-rs/foundry/issues/2019).
+
+### Dependencies not found when deploying contracts
+
+Even though we specified solidity remappings for vs code, we get an error like this.
+
+```shell
+Compiler run failed
+error[6275]: ParserError: Source "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol" not found: File not found.
+```
+
+We need to add additionally a remappings.txt file at the root of the foundry project.
+
+```.txt
+ds-test/=lib/forge-std/lib/ds-test/src/
+forge-std/=lib/forge-std/src/
+@openzeppelin/=lib/openzeppelin-contracts/
+```
+
+See also this question [here](https://ethereum.stackexchange.com/questions/135652/foundry-dependencies-not-resolved-for-deployment-of-contract/135653#135653).
