@@ -1,4 +1,5 @@
 import { FC, useEffect, useState } from "react"
+import Link from "next/link";
 import styled from "styled-components";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useContractRead } from "wagmi";
@@ -37,7 +38,7 @@ const Navbar: FC = () => {
     return (
 		<Container>
 			<TitleNavbar>💻 CryptoDevs</TitleNavbar>
-			{isConnected && isOwner && (<>Only Owner</>)}
+			{isConnected && isOwner && (<Link href="onlyOwner">Only Owner</Link>)}
 			<ConnectButton />
 		</Container>)
 }
