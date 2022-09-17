@@ -57,6 +57,7 @@ const Mint = styled.button`
     background: -webkit-linear-gradient(10deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
     border-radius: 12px;
     border: transparent;
+    transition-duration: 0.3s;
     &:hover {
         transition: 0.3s ease-out;
         transform: scale(1.05) perspective(1px)

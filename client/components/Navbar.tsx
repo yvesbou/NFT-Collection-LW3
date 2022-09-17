@@ -76,6 +76,7 @@ const OnlyOwnerButton = styled.button`
 	letter-spacing: 0.1px;
 	box-shadow: rgba(100, 100, 111, 0.4) 0px 7px 29px 0px;
 	font-weight: 900;
+	transition-duration: 0.3s;
 	&:hover {
         transition: 0.3s ease-out;
         transform: scale(1.05) perspective(1px)
