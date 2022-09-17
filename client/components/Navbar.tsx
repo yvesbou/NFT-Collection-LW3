@@ -56,6 +56,7 @@ const Container = styled.div`
 `
 
 const SubContainer = styled.div`
+	width: 40%;
 	display: flex;
 	flex-direction: row;
 	align-items: flex-end;
@@ -75,6 +76,10 @@ const OnlyOwnerButton = styled.button`
 	letter-spacing: 0.1px;
 	box-shadow: rgba(100, 100, 111, 0.4) 0px 7px 29px 0px;
 	font-weight: 900;
+	&:hover {
+        transition: 0.3s ease-out;
+        transform: scale(1.05) perspective(1px)
+    }
 `
 
 
