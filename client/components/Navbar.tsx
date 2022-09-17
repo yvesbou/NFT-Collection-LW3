@@ -38,8 +38,10 @@ const Navbar: FC = () => {
     return (
 		<Container>
 			<TitleNavbar>💻 CryptoDevs</TitleNavbar>
-			{isConnected && isOwner && (<Link href="onlyOwner"><OnlyOwnerButton>ONLY OWNER ✋🛑</OnlyOwnerButton></Link>)}
-			<ConnectButton />
+			<SubContainer>
+				{isConnected && isOwner && (<Link href="onlyOwner"><OnlyOwnerButton>ONLY OWNER ✋🛑</OnlyOwnerButton></Link>)}
+				<ConnectButton />
+			</SubContainer>
 		</Container>)
 }
 
@@ -53,6 +55,13 @@ const Container = styled.div`
 	padding: 1rem;
 `
 
+const SubContainer = styled.div`
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+	justify-content: space-between;
+	`
+
 const TitleNavbar = styled.div`
 	font-size: 30px;
     font-weight: 900;
@@ -62,8 +71,9 @@ const OnlyOwnerButton = styled.button`
 	padding: 10px;
 	border-radius: 12px;
 	border: transparent;
-	background-color: white;
-	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+	background-color: #F8F8F8;
+	letter-spacing: 0.1px;
+	box-shadow: rgba(100, 100, 111, 0.4) 0px 7px 29px 0px;
 	font-weight: 900;
 `
 
