@@ -38,7 +38,7 @@ const Navbar: FC = () => {
     return (
 		<Container>
 			<TitleNavbar>💻 CryptoDevs</TitleNavbar>
-			{isConnected && isOwner && (<Link href="onlyOwner">Only Owner</Link>)}
+			{isConnected && isOwner && (<Link href="onlyOwner"><OnlyOwnerButton>ONLY OWNER ✋🛑</OnlyOwnerButton></Link>)}
 			<ConnectButton />
 		</Container>)
 }
@@ -56,6 +56,15 @@ const Container = styled.div`
 const TitleNavbar = styled.div`
 	font-size: 30px;
     font-weight: 900;
+`
+
+const OnlyOwnerButton = styled.button`
+	padding: 10px;
+	border-radius: 12px;
+	border: transparent;
+	background-color: white;
+	box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+	font-weight: 900;
 `
 
 
