@@ -19,7 +19,7 @@ cd contract
 forge init
 ```
 
-### Deploy contract
+### Deploy contracts
 
 ```shell
 # To give our shell access to our environment variables
@@ -27,6 +27,16 @@ source .env
 # To deploy and verify our contract
 forge script script/CryptoDevs.s.sol:CryptoDevsScript --rpc-url $GOERLI_RPC_URL  --private-key $GOERLI_PRIVATE_KEY --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY -vvvv
 
+```
+
+### Test contracts
+
+Using foundry
+
+```shell
+forge test
+# for more details, logging with emit, add verbosity 1 up to 5 v's
+forge test -vvvv
 ```
 
 ## Troubleshooting

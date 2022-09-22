@@ -7,11 +7,6 @@ import "forge-std/console.sol";
 import "src/CryptoDevs.sol";
 import "src/IWhitelist.sol";
 
-interface CheatCodes {
-    // Gets address for a given private key, (privateKey) => (address)
-    function addr(uint256) external returns (address);
-}
-
 contract CryptoDevsTest is Test {
     CryptoDevs cryptoDevs;
     address deployer;
@@ -93,12 +88,11 @@ contract CryptoDevsTest is Test {
         cryptoDevs.presaleMint{value: 0.01 ether}();
     }
 
-    function testPresaleNFTSoldOutDuringPresale() public {}
-
-    // function testPresaleMintFailsPeriodOver() public {
-    //     cryptoDevs.startPresale();
-    //     uint256 timePresaleEnded = block.timestamp + 5 minutes + 1 seconds;
-    //     vm.rollFork(timePresaleEnded);
-    //     // asserEq();
-    // }
+    function testPresaleMintDuringPausedContract() public {
+        cryptoDevs.startPresale();
+        cryptoDevs.setPaused(true);
+        vm.prank(whitelistedAddresses[0]);
+        vm.expectRevert(bytes("Contract currently paused"));
+        cryptoDevs.presaleMint{value: 0.01 ether}();
+    }
 }
