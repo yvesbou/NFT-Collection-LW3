@@ -53,6 +53,15 @@ contract CryptoDevsTest is Test {
         assertEq(tokenIds, 1);
     }
 
+    // send not enough ether
+    function testPresaleMintNotEnoughEther() public payable {
+        cryptoDevs.startPresale();
+        vm.prank(whitelistedAddresses[0]);
+        // send not enough ether
+        vm.expectRevert(bytes("Ether sent is not enough"));
+        cryptoDevs.presaleMint{value: 0.001 ether}();
+    }
+
     // try presale before started
     function testPresaleMintBeforePeriod() public {
         vm.prank(whitelistedAddresses[0]);
@@ -83,6 +92,8 @@ contract CryptoDevsTest is Test {
         vm.expectRevert(bytes("You are not whitelisted"));
         cryptoDevs.presaleMint{value: 0.01 ether}();
     }
+
+    function testPresaleNFTSoldOutDuringPresale() public {}
 
     // function testPresaleMintFailsPeriodOver() public {
     //     cryptoDevs.startPresale();
