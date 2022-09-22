@@ -62,6 +62,7 @@ const Mint = styled.button`
         transition: 0.3s ease-out;
         transform: scale(1.05) perspective(1px)
     }
+    cursor: pointer;
 `
 
 
