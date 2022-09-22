@@ -74,6 +74,16 @@ contract CryptoDevsTest is Test {
         cryptoDevs.presaleMint{value: 0.01 ether}();
     }
 
+    function testPresaleMintNotWhitelisted() public {
+        cryptoDevs.startPresale();
+        address someRandomUser = vm.addr(1);
+        emit log_address(someRandomUser);
+        vm.prank(someRandomUser);
+        vm.deal(someRandomUser, 1 ether);
+        vm.expectRevert(bytes("You are not whitelisted"));
+        cryptoDevs.presaleMint{value: 0.01 ether}();
+    }
+
     // function testPresaleMintFailsPeriodOver() public {
     //     cryptoDevs.startPresale();
     //     uint256 timePresaleEnded = block.timestamp + 5 minutes + 1 seconds;
