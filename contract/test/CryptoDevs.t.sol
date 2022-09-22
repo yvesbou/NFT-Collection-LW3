@@ -54,15 +54,25 @@ contract CryptoDevsTest is Test {
     }
 
     // try presale before started
-    function testPresaleMintPresaleNotRunning() public {
+    function testPresaleMintBeforePeriod() public {
         vm.prank(whitelistedAddresses[0]);
         vm.expectRevert(bytes("Presale is not running"));
-        // send enough ether
         cryptoDevs.presaleMint{value: 0.01 ether}();
     }
 
     // try presale after presale period is over
-    function testPresaleMintPresaleAfterExpiration() public {}
+    function testPresaleMintAfterExpiration() public {
+        cryptoDevs.startPresale();
+        // vm.rollFork(goerliFork, blockNumber);
+        emit log_uint(block.timestamp);
+        uint256 timestampPresaleEnded = block.timestamp + 6 minutes;
+        vm.warp(timestampPresaleEnded);
+        emit log_uint(block.timestamp);
+
+        vm.prank(whitelistedAddresses[0]);
+        vm.expectRevert(bytes("Presale is not running"));
+        cryptoDevs.presaleMint{value: 0.01 ether}();
+    }
 
     // function testPresaleMintFailsPeriodOver() public {
     //     cryptoDevs.startPresale();
