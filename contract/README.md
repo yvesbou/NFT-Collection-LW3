@@ -47,7 +47,7 @@ import "openzeppelin-contracts/contracts/token/ERC721/ERC721.sol";
 ```
 
 Note:
-When having a folder structure like this:
+When having a folder structure like this because you want to have a monorepo (contract and frontend together):
 
 ```
 - NFT-Collection-LW3

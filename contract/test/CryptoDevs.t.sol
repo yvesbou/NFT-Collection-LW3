@@ -28,6 +28,7 @@ contract CryptoDevsTest is Test {
     // need to create a fork
     function setUp() public {
         string memory goerli_RPC_URL = vm.envString("GOERLI_RPC_URL");
+        // createSelectFork is a one-liner for createFork plus selectFork
         goerliFork = vm.createSelectFork(goerli_RPC_URL);
 
         cryptoDevs = new CryptoDevs("someBaseURI", whitelistContract);
@@ -42,11 +43,17 @@ contract CryptoDevsTest is Test {
         assertEq(started, true);
     }
 
-    function testPresaleMint() public {
+    // presaleMint call without any error
+    function testPresaleMint() public payable {
+        cryptoDevs.startPresale();
         vm.prank(whitelistedAddresses[0]);
         // how to send some ether with the transaction?
-        cryptoDevs.presaleMint();
+        //cryptoDevs.presaleMint.call{value: msg.value}("");
+        cryptoDevs.presaleMint{value: 0.01 ether}();
+        // cryptoDevs.presaleMint.call(msg.value)("");
         // how to assert?
+        uint256 tokenIds = cryptoDevs.tokenIds();
+        assertEq(tokenIds, 1);
     }
 
     // function testPresaleMintFailsPeriodOver() public {
