@@ -38,6 +38,13 @@ contract CryptoDevsTest is Test {
         assertEq(started, true);
     }
 
+    // test presale timestamp like 5 minutes from now
+    function testPresalePeriod() public {
+        cryptoDevs.startPresale();
+        vm.warp(block.timestamp + 5 minutes);
+        assertEq(cryptoDevs.presaleEnded(), block.timestamp);
+    }
+
     // presaleMint call without any error
     function testPresaleMint() public payable {
         cryptoDevs.startPresale();
@@ -57,14 +64,14 @@ contract CryptoDevsTest is Test {
         cryptoDevs.presaleMint{value: 0.001 ether}();
     }
 
-    // try presale before started
+    // test presale before started
     function testPresaleMintBeforePeriod() public {
         vm.prank(whitelistedAddresses[0]);
         vm.expectRevert(bytes("Presale is not running"));
         cryptoDevs.presaleMint{value: 0.01 ether}();
     }
 
-    // try presale after presale period is over
+    // test presale after presale period is over
     function testPresaleMintAfterExpiration() public {
         cryptoDevs.startPresale();
         // vm.rollFork(goerliFork, blockNumber);
@@ -78,6 +85,7 @@ contract CryptoDevsTest is Test {
         cryptoDevs.presaleMint{value: 0.01 ether}();
     }
 
+    // test presale mint with EOA not from Whitelist
     function testPresaleMintNotWhitelisted() public {
         cryptoDevs.startPresale();
         address someRandomUser = vm.addr(1);
@@ -88,6 +96,7 @@ contract CryptoDevsTest is Test {
         cryptoDevs.presaleMint{value: 0.01 ether}();
     }
 
+    // test minting during paused presale
     function testPresaleMintDuringPausedContract() public {
         cryptoDevs.startPresale();
         cryptoDevs.setPaused(true);
@@ -95,4 +104,33 @@ contract CryptoDevsTest is Test {
         vm.expectRevert(bytes("Contract currently paused"));
         cryptoDevs.presaleMint{value: 0.01 ether}();
     }
+
+    function testPresaleMintMoreThanAvailable() public {
+        cryptoDevs.startPresale();
+        vm.startPrank(whitelistedAddresses[0]);
+        for (uint256 index = 0; index < 21; index++) {
+            if (cryptoDevs.tokenIds() == cryptoDevs.maxTokenIds()) {
+                emit log_uint(cryptoDevs.tokenIds());
+                vm.expectRevert(bytes("Exceeded maximum Crypto Devs supply"));
+                cryptoDevs.presaleMint{value: 0.01 ether}();
+            } else {
+                emit log_uint(cryptoDevs.tokenIds());
+                cryptoDevs.presaleMint{value: 0.01 ether}();
+            }
+        }
+        vm.stopPrank();
+    }
+
+    function testNormalMintDuringPresale() public {
+        cryptoDevs.startPresale();
+        address someRandomUser = vm.addr(1);
+        vm.prank(someRandomUser);
+        vm.deal(someRandomUser, 1 ether);
+        vm.expectRevert(bytes("Presale has not ended yet"));
+        cryptoDevs.mint{value: 0.01 ether}();
+    }
+    // test
+    // normal mint
+    // trying to exceed max supply with mint
+    // test withdraw also with fuzzing
 }
