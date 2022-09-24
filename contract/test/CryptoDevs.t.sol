@@ -129,6 +129,18 @@ contract CryptoDevsTest is Test {
         vm.expectRevert(bytes("Presale has not ended yet"));
         cryptoDevs.mint{value: 0.01 ether}();
     }
+
+    function testNormalMint() public {
+        cryptoDevs.startPresale();
+        uint256 timestampPresaleEnded = block.timestamp + 6 minutes;
+        vm.warp(timestampPresaleEnded);
+        address someRandomUser = vm.addr(1);
+        vm.prank(someRandomUser);
+        vm.deal(someRandomUser, 1 ether);
+        cryptoDevs.mint{value: 0.01 ether}();
+        uint256 tokenIds = cryptoDevs.tokenIds();
+        assertEq(tokenIds, 1);
+    }
     // test
     // normal mint
     // trying to exceed max supply with mint
