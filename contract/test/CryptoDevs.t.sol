@@ -209,6 +209,4 @@ contract CryptoDevsTest is Test {
         assertEq(ownerProfit, 0.2 ether);
         vm.stopPrank();
     }
-
-    // test withdraw also with fuzzing
 }
