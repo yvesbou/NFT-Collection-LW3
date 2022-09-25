@@ -21,13 +21,19 @@ const OnlyOwner: NextPage = () => {
                 </InfoPlaceholder>
                 <Grid>
                     <WithdrawBox>
-                        <WithdrawBoxTitle>Total Received Ether</WithdrawBoxTitle>
+                        <CardTitle>Total Received Ether</CardTitle>
                         <WithdrawBoxEtherSymbolPlaceholder><Image src="/ethereum-eth-logo.svg" width="30" height="30"></Image></WithdrawBoxEtherSymbolPlaceholder>
                         <WithdrawBoxEtherAmount>0.124</WithdrawBoxEtherAmount>
-                        <WithdrawBoxButtonPlaceholder>Withdraw</WithdrawBoxButtonPlaceholder>
+                        <WithdrawBoxButton>Withdraw</WithdrawBoxButton>
                     </WithdrawBox>
-                    <PresaleBox>Presale</PresaleBox>
-                    <PauseContractBox>PauseContract</PauseContractBox>
+                    <PresaleBox>
+                        <CardTitle>Presale Launcher</CardTitle>
+                        <PresaleLaunchButton>Start Presale</PresaleLaunchButton>
+                    </PresaleBox>
+                    <PauseContractBox>
+                        <CardTitle>Pause Contract</CardTitle>
+                        <PauseContractButton>Pause</PauseContractButton>
+                    </PauseContractBox>
                 </Grid>
             </main>
         </div>
@@ -45,7 +51,8 @@ const InfoPlaceholder = styled.div`
 `
 
 const Info = styled.div`
-    box-shadow: rgba(100, 100, 111, 0.3) 0px 7px 29px 0px;
+    // box-shadow: rgba(100, 100, 111, 0.3) 0px 7px 29px 0px;
+    background: linear-gradient(180deg, #FC466B 0%, #3F5EFB 250%);
     background-color: orange;
     padding: 10px;
     border-radius: 12px;
@@ -80,6 +87,11 @@ const PresaleBox = styled.div`
     min-height: 200px;
     border-radius: 12px;
     padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
 `
 const PauseContractBox = styled.div`
     grid-area: 2 / 1 / 3 / 2;
@@ -87,9 +99,14 @@ const PauseContractBox = styled.div`
     min-height: 200px;
     border-radius: 12px;
     padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(6, 1fr);
+    grid-column-gap: 20px;
+    grid-row-gap: 20px;
 `
 
-const WithdrawBoxTitle = styled.div`
+const CardTitle = styled.div`
     grid-area: 1 / 1 / 3 / 5;
     letter-spacing: 0.5px;
     font-size: 28px;
@@ -109,7 +126,45 @@ const WithdrawBoxEtherAmount = styled.div`
 	font-weight: 900;
 `
 
-const WithdrawBoxButtonPlaceholder = styled.button`
+const WithdrawBoxButton = styled.button`
+    grid-area: 5 / 4 / 7 / 7;
+    padding: 15px;
+    font-size: 24px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    color: white;
+    // background: -webkit-linear-gradient(10deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    background: black;
+    border-radius: 12px;
+    border: transparent;
+    transition-duration: 0.3s;
+    &:hover {
+        transition: 0.3s ease-out;
+        transform: scale(1.05) perspective(1px)
+    }
+    cursor: pointer;
+`
+
+const PresaleLaunchButton = styled.button`
+    grid-area: 5 / 4 / 7 / 7;
+    padding: 15px;
+    font-size: 24px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    color: white;
+    // background: -webkit-linear-gradient(10deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    background: black;
+    border-radius: 12px;
+    border: transparent;
+    transition-duration: 0.3s;
+    &:hover {
+        transition: 0.3s ease-out;
+        transform: scale(1.05) perspective(1px)
+    }
+    cursor: pointer;
+`
+
+const PauseContractButton = styled.button`
     grid-area: 5 / 4 / 7 / 7;
     padding: 15px;
     font-size: 24px;
