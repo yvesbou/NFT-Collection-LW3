@@ -1,4 +1,5 @@
 import type { NextPage } from 'next';
+import Image from 'next/image';
 import Navbar from '../components/Navbar';
 import styles from '../styles/Home.module.css';
 import styled from "styled-components";
@@ -15,13 +16,13 @@ const OnlyOwner: NextPage = () => {
                 <Navbar/>
                 <InfoPlaceholder>
                     <Info>
-                        This is the "Only Owner Page" and is only visible to {address?.slice(0,5)}...{address?.slice(-5,-1)}, the address which deployed the smart contracts.
+                        This is the "Only Owner Page" and is only visible to {address?.slice(0,5)}...{address?.slice(-4,address.length)}, the address which deployed the smart contracts.
                     </Info>
                 </InfoPlaceholder>
                 <Grid>
                     <WithdrawBox>
-                        <WithdrawBoxTitle>Ether Total Received</WithdrawBoxTitle>
-                        <WithdrawBoxEtherSymbolPlaceholder>SVG</WithdrawBoxEtherSymbolPlaceholder>
+                        <WithdrawBoxTitle>Total Received Ether</WithdrawBoxTitle>
+                        <WithdrawBoxEtherSymbolPlaceholder><Image src="/ethereum-eth-logo.svg" width="30" height="30"></Image></WithdrawBoxEtherSymbolPlaceholder>
                         <WithdrawBoxEtherAmount>0.124</WithdrawBoxEtherAmount>
                         <WithdrawBoxButtonPlaceholder>Withdraw</WithdrawBoxButtonPlaceholder>
                     </WithdrawBox>
@@ -48,6 +49,8 @@ const Info = styled.div`
     background-color: orange;
     padding: 10px;
     border-radius: 12px;
+    letter-spacing: 0.1px;
+	font-weight: 900;
 `
 
 const Grid = styled.div`
@@ -61,7 +64,7 @@ const Grid = styled.div`
 
 const WithdrawBox = styled.div`
     grid-area: 1 / 1 / 2 / 2;
-    background-color: grey;
+    background: linear-gradient(135deg, #efd5ff 0%, #515ada 100%);
     min-height: 200px;
     border-radius: 12px;
     padding: 20px;
@@ -73,33 +76,56 @@ const WithdrawBox = styled.div`
 `
 const PresaleBox = styled.div`
     grid-area: 1 / 2 / 2 / 3;
-    background-color: grey;
+    background: linear-gradient(-135deg, #efd5ff 0%, #515ada 100%);
     min-height: 200px;
     border-radius: 12px;
     padding: 20px;
 `
 const PauseContractBox = styled.div`
     grid-area: 2 / 1 / 3 / 2;
-    background-color: grey;
+    background: linear-gradient(45deg, #efd5ff 0%, #515ada 100%);
     min-height: 200px;
     border-radius: 12px;
     padding: 20px;
 `
 
 const WithdrawBoxTitle = styled.div`
-    grid-area: 1 / 1 / 2 / 4;
+    grid-area: 1 / 1 / 3 / 5;
+    letter-spacing: 0.5px;
+    font-size: 28px;
+	font-weight: 900;
 `
 
 const WithdrawBoxEtherSymbolPlaceholder = styled.div`
-    grid-area: 3 / 1 / 4 / 2;
+    grid-area: 3 / 1 / 5 / 3;
 `
 
 const WithdrawBoxEtherAmount = styled.div`
-    grid-area: 3 / 2 / 4 / 4;
+    grid-area: 3 / 2 / 5 / 5;
+    display: flex;
+    justify-content: start;
+    letter-spacing: 0.5px;
+    font-size: 24px;
+	font-weight: 900;
 `
 
 const WithdrawBoxButtonPlaceholder = styled.button`
-    grid-area: 6 / 5 / 7 / 7;
+    grid-area: 5 / 4 / 7 / 7;
+    padding: 15px;
+    font-size: 24px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    color: white;
+    // background: -webkit-linear-gradient(10deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    background: black;
+    border-radius: 12px;
+    border: transparent;
+    transition-duration: 0.3s;
+    &:hover {
+        transition: 0.3s ease-out;
+        transform: scale(1.05) perspective(1px)
+    }
+    cursor: pointer;
 `
 
 export default OnlyOwner;
