@@ -1,14 +1,62 @@
 import type { NextPage } from 'next';
+import { useState } from 'react';
 import Image from 'next/image';
 import Navbar from '../components/Navbar';
 import styles from '../styles/Home.module.css';
-import styled from "styled-components";
-import { useAccount } from 'wagmi';
+import styled, { keyframes, css } from "styled-components";
+import { useAccount, useContractRead } from 'wagmi';
+import CryptoDevsAbi from "../abi/abi"
+import { time } from 'console';
+
+
+const contractConfig = {
+	addressOrName: '0x96788D3aA03B6afAE42F15c059934ac53094Aca8',
+	contractInterface: CryptoDevsAbi.abi,
+};
+
+interface IProps {
+    isLoading?: boolean;
+    isWaiting?: boolean;
+    isDisabled?: boolean;
+    onClick?: () => void;
+  }
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 
 const OnlyOwner: NextPage = () => {
 
 	const { address } = useAccount();
+
+    const [waitingForApproval, setWaitingForApproval] = useState(false);
+    const [withdrawButtonLoading, setWithdrawButtonLoading] = useState(false);
+    const [presaleButtonLoading, setPresaleButtonLoading] = useState(false);
+    const [pauseButtonLoading, setPauseButtonLoading] = useState(false);
+
+    // will be replaced by wagmi hook
+    const [paused, setPaused] = useState(false);
+
+    // wagmi hooks
+	// const { data: ownerAddress } = useContractRead({
+	// 	...contractConfig,
+	// 	functionName: 'owner',
+	// 	watch: true,
+	// });
+
+    const handleClickPauseButton = async () => {
+        // waiting for approval
+        setWaitingForApproval(true);
+        await sleep(3000);
+        setWaitingForApproval(false);
+        // UI shows that state is loading
+        setPauseButtonLoading(true);
+        await sleep(5000);
+        // smart contract call is made => wagmi contractwrite
+        // listening to change of smart contract state => wagmi hook contractRead
+        // state change => UI change
+        setPaused(true);
+        setPauseButtonLoading(false);
+    }
 
     return(
         <div className={styles.container}>
@@ -16,7 +64,7 @@ const OnlyOwner: NextPage = () => {
                 <Navbar/>
                 <InfoPlaceholder>
                     <Info>
-                        This is the "Only Owner Page" and is only visible to {address?.slice(0,5)}...{address?.slice(-4,address.length)}, the address which deployed the smart contracts.
+                        This is the "Only Owner Page" which is only visible to {address?.slice(0,5)}...{address?.slice(-4,address.length)}, the address which deployed the smart contracts.
                     </Info>
                 </InfoPlaceholder>
                 <Grid>
@@ -32,7 +80,11 @@ const OnlyOwner: NextPage = () => {
                     </PresaleBox>
                     <PauseContractBox>
                         <CardTitle>Pause Contract</CardTitle>
-                        <PauseContractButton>Pause</PauseContractButton>
+                        <PauseContractButton isLoading={pauseButtonLoading} isWaiting={waitingForApproval} onClick={() => {handleClickPauseButton();}}>
+                            {waitingForApproval && 'Waiting for approval'}
+                            {pauseButtonLoading && 'Pausing...'}
+                            {!waitingForApproval && !pauseButtonLoading && 'Pause'}
+                        </PauseContractButton>
                     </PauseContractBox>
                 </Grid>
             </main>
@@ -164,14 +216,21 @@ const PresaleLaunchButton = styled.button`
     cursor: pointer;
 `
 
-const PauseContractButton = styled.button`
+// const pulse = 
+
+const pulse = keyframes`
+    0% { opacity: 0 }
+    100% { opacity: '100%' }
+`;
+
+const PauseContractButton = styled.button<IProps>`
     grid-area: 5 / 4 / 7 / 7;
     padding: 15px;
     font-size: 24px;
     letter-spacing: 1px;
     font-weight: 600;
     color: white;
-    // background: -webkit-linear-gradient(10deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    transition: all ease 100ms;
     background: black;
     border-radius: 12px;
     border: transparent;
@@ -181,6 +240,33 @@ const PauseContractButton = styled.button`
         transform: scale(1.05) perspective(1px)
     }
     cursor: pointer;
+
+    ${ ({isWaiting}) => isWaiting && `
+        background: rgba(22, 25, 31, 0.24);
+    `}
+
+    ${ ({isLoading}) => isLoading && css`
+        background-image: linear-gradient(270deg, #FF6257, #FF5CA0);
+        position: relative;
+        &::after {
+            animation-name: ${pulse};
+            animation-duration: 500ms;
+            animation-direction: alternate;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+            background-color: #FF6257;
+            border-radius: inherit;
+            bottom: 0;
+            content: ' ';
+            left: 0;
+            position: absolute;
+            right: 0;
+            top: 0;
+        }`
+    }
 `
+
+
+
 
 export default OnlyOwner;
