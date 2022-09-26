@@ -37,8 +37,9 @@ const OnlyOwner: NextPage = () => {
 
     const [disableButton, setDisableButton] = useState(false);
 
-    // will be replaced by wagmi hook
+    // will be replaced by wagmi hooks
     const [paused, setPaused] = useState(false);
+    const [presaleStarted, setPresaleStarted] = useState(false);
 
     // wagmi hooks
 	// const { data: ownerAddress } = useContractRead({
@@ -105,6 +106,7 @@ const OnlyOwner: NextPage = () => {
         // listening to change of smart contract state => wagmi hook contractRead
         // state change => UI change
         // setPaused(true);
+        setPresaleStarted(true);
         setPresaleButtonLoading(false);
     }
 
@@ -130,11 +132,12 @@ const OnlyOwner: NextPage = () => {
                     </WithdrawBox>
                     <PresaleBox>
                         <CardTitle>Presale Launcher</CardTitle>
-                        <Button disabled={disableButton} isLoading={presaleButtonLoading} isWaiting={waitingForApprovalForPresale} onClick={()=>{handleClickPresaleButton();}}>
+                        <PresaleButton disabled={disableButton || presaleStarted} isLoading={presaleButtonLoading} isWaiting={waitingForApprovalForPresale} onClick={()=>{handleClickPresaleButton();}}>
                             {waitingForApprovalForPresale && 'Waiting for approval'}
                             {presaleButtonLoading && 'Launching 🚀...'}
-                            {!waitingForApprovalForPresale && !presaleButtonLoading && 'Start Presale'}
-                        </Button>
+                            {!presaleStarted && !waitingForApprovalForPresale && !presaleButtonLoading && 'Start Presale'}
+                            {presaleStarted && !waitingForApprovalForPresale && !presaleButtonLoading && 'Presale Launched'}
+                        </PresaleButton>
                     </PresaleBox>
                     <PauseContractBox>
                         <CardTitle>Pause Contract</CardTitle>
@@ -261,6 +264,13 @@ const Button = styled.button<IProps>`
     }
     cursor: pointer;
 
+    ${ ({disabled}) => disabled && `
+        &:hover {
+            transform: scale(1) perspective(1px)
+        }
+        cursor: auto;
+    `}
+
     ${ ({isWaiting}) => isWaiting && `
         background: rgba(22, 25, 31, 0.24);
         font-size: 20px;
@@ -297,6 +307,15 @@ const Button = styled.button<IProps>`
     }
 `
 
+const PresaleButton = styled(Button)`
+    ${ ({disabled}) => disabled && `
+        background: rgba(22, 25, 31, 0.24);
+        &:hover {
+            transform: scale(1) perspective(1px)
+        }
+        cursor: auto;
+    `}
+`
 
 
 
