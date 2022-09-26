@@ -1,5 +1,5 @@
 import type { NextPage } from 'next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Navbar from '../components/Navbar';
 import styles from '../styles/Home.module.css';
@@ -28,10 +28,14 @@ const OnlyOwner: NextPage = () => {
 
 	const { address } = useAccount();
 
-    const [waitingForApproval, setWaitingForApproval] = useState(false);
+    const [waitingForApprovalForWithdraw, setWaitingForApprovalForWithdraw] = useState(false);
     const [withdrawButtonLoading, setWithdrawButtonLoading] = useState(false);
+    const [waitingForApprovalForPresale, setWaitingForApprovalForPresale] = useState(false);
     const [presaleButtonLoading, setPresaleButtonLoading] = useState(false);
+    const [waitingForApprovalForPausing, setWaitingForApprovalForPausing] = useState(false);
     const [pauseButtonLoading, setPauseButtonLoading] = useState(false);
+
+    const [disableButton, setDisableButton] = useState(false);
 
     // will be replaced by wagmi hook
     const [paused, setPaused] = useState(false);
@@ -43,12 +47,25 @@ const OnlyOwner: NextPage = () => {
 	// 	watch: true,
 	// });
 
+    useEffect(() => {
+        const waiting: boolean = (
+            waitingForApprovalForWithdraw || 
+            waitingForApprovalForPresale || 
+            waitingForApprovalForPausing ||
+            withdrawButtonLoading ||
+            presaleButtonLoading ||
+            pauseButtonLoading
+            );
+        setDisableButton(waiting);
+    }, [waitingForApprovalForWithdraw, waitingForApprovalForPresale, waitingForApprovalForPausing, withdrawButtonLoading, presaleButtonLoading, pauseButtonLoading])
+    
+
     const handleClickPauseButton = async () => {
         console.log("click")
         // waiting for approval
-        setWaitingForApproval(true);
+        setWaitingForApprovalForPausing(true);
         await sleep(3000);
-        setWaitingForApproval(false);
+        setWaitingForApprovalForPausing(false);
         // UI shows that state is loading
         setPauseButtonLoading(true);
         await sleep(5000);
@@ -57,6 +74,38 @@ const OnlyOwner: NextPage = () => {
         // state change => UI change
         setPaused(true);
         setPauseButtonLoading(false);
+    }
+
+    const handleClickWithdrawButton = async () => {
+        console.log("click")
+        // waiting for approval
+        setWaitingForApprovalForWithdraw(true);
+        await sleep(3000);
+        setWaitingForApprovalForWithdraw(false);
+        // UI shows that state is loading
+        setWithdrawButtonLoading(true);
+        await sleep(5000);
+        // smart contract call is made => wagmi contractwrite
+        // listening to change of smart contract state => wagmi hook contractRead
+        // state change => UI change
+        // setPaused(true);
+        setWithdrawButtonLoading(false);
+    }
+
+    const handleClickPresaleButton = async () => {
+        console.log("click")
+        // waiting for approval
+        setWaitingForApprovalForPresale(true);
+        await sleep(3000);
+        setWaitingForApprovalForPresale(false);
+        // UI shows that state is loading
+        setPresaleButtonLoading(true);
+        await sleep(5000);
+        // smart contract call is made => wagmi contractwrite
+        // listening to change of smart contract state => wagmi hook contractRead
+        // state change => UI change
+        // setPaused(true);
+        setPresaleButtonLoading(false);
     }
 
     return(
@@ -73,21 +122,29 @@ const OnlyOwner: NextPage = () => {
                         <CardTitle>Total Received Ether</CardTitle>
                         <WithdrawBoxEtherSymbolPlaceholder><Image src="/ethereum-eth-logo.svg" width="30" height="30"></Image></WithdrawBoxEtherSymbolPlaceholder>
                         <WithdrawBoxEtherAmount>0.124</WithdrawBoxEtherAmount>
-                        <WithdrawBoxButton>Withdraw</WithdrawBoxButton>
+                        <Button disabled={disableButton} isLoading={withdrawButtonLoading} isWaiting={waitingForApprovalForWithdraw} onClick={()=>{handleClickWithdrawButton();}}>
+                            {waitingForApprovalForWithdraw && 'Waiting for approval'}
+                            {withdrawButtonLoading && 'Withdrawing...'}
+                            {!waitingForApprovalForWithdraw && !withdrawButtonLoading && 'Withdraw'}
+                        </Button>
                     </WithdrawBox>
                     <PresaleBox>
                         <CardTitle>Presale Launcher</CardTitle>
-                        <PresaleLaunchButton>Start Presale</PresaleLaunchButton>
+                        <Button disabled={disableButton} isLoading={presaleButtonLoading} isWaiting={waitingForApprovalForPresale} onClick={()=>{handleClickPresaleButton();}}>
+                            {waitingForApprovalForPresale && 'Waiting for approval'}
+                            {presaleButtonLoading && 'Launching 🚀...'}
+                            {!waitingForApprovalForPresale && !presaleButtonLoading && 'Start Presale'}
+                        </Button>
                     </PresaleBox>
                     <PauseContractBox>
                         <CardTitle>Pause Contract</CardTitle>
-                        <PauseContractButton disabled={pauseButtonLoading || waitingForApproval} isLoading={pauseButtonLoading} isWaiting={waitingForApproval} onClick={() => {handleClickPauseButton();}}>
-                            {waitingForApproval && 'Waiting for approval'}
+                        <Button disabled={disableButton} isLoading={pauseButtonLoading} isWaiting={waitingForApprovalForPausing} onClick={() => {handleClickPauseButton();}}>
+                            {waitingForApprovalForPausing && 'Waiting for approval'}
                             {!paused && pauseButtonLoading && 'Pausing...'}
                             {paused && pauseButtonLoading && 'Resuming...'}
-                            {!paused && !waitingForApproval && !pauseButtonLoading && 'Pause'}
-                            {paused && !waitingForApproval && !pauseButtonLoading && 'Resume'}
-                        </PauseContractButton>
+                            {!paused && !waitingForApprovalForPausing && !pauseButtonLoading && 'Pause'}
+                            {paused && !waitingForApprovalForPausing && !pauseButtonLoading && 'Resume'}
+                        </Button>
                     </PauseContractBox>
                 </Grid>
             </main>
@@ -181,51 +238,12 @@ const WithdrawBoxEtherAmount = styled.div`
 	font-weight: 900;
 `
 
-const WithdrawBoxButton = styled.button`
-    grid-area: 5 / 4 / 7 / 7;
-    padding: 15px;
-    font-size: 24px;
-    letter-spacing: 1px;
-    font-weight: 600;
-    color: white;
-    // background: -webkit-linear-gradient(10deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
-    background: black;
-    border-radius: 12px;
-    border: transparent;
-    transition-duration: 0.3s;
-    &:hover {
-        transition: 0.3s ease-out;
-        transform: scale(1.05) perspective(1px)
-    }
-    cursor: pointer;
-`
-
-const PresaleLaunchButton = styled.button`
-    grid-area: 5 / 4 / 7 / 7;
-    padding: 15px;
-    font-size: 24px;
-    letter-spacing: 1px;
-    font-weight: 600;
-    color: white;
-    // background: -webkit-linear-gradient(10deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
-    background: black;
-    border-radius: 12px;
-    border: transparent;
-    transition-duration: 0.3s;
-    &:hover {
-        transition: 0.3s ease-out;
-        transform: scale(1.05) perspective(1px)
-    }
-    cursor: pointer;
-`
-
-
 const pulse = keyframes`
     0% { opacity: 0 }
     100% { opacity: '100%' }
 `;
 
-const PauseContractButton = styled.button<IProps>`
+const Button = styled.button<IProps>`
     grid-area: 5 / 4 / 7 / 7;
     padding: 15px;
     font-size: 24px;
@@ -255,6 +273,7 @@ const PauseContractButton = styled.button<IProps>`
     ${ ({isLoading}) => isLoading && css`
         background-image: linear-gradient(270deg, #FF6257, #FF5CA0);
         position: relative;
+        font-size: 20px;
         &:hover {
             transform: scale(1) perspective(1px)
         }
@@ -267,6 +286,7 @@ const PauseContractButton = styled.button<IProps>`
             animation-timing-function: ease-in-out;
             background-color: #FF6257;
             border-radius: inherit;
+            font-size: 20px;
             bottom: 0;
             content: ' ';
             left: 0;
