@@ -17,7 +17,7 @@ const contractConfig = {
 interface IProps {
     isLoading?: boolean;
     isWaiting?: boolean;
-    isDisabled?: boolean;
+    isPermanentlyDisabled?: boolean;
     onClick?: () => void;
   }
 
@@ -132,12 +132,12 @@ const OnlyOwner: NextPage = () => {
                     </WithdrawBox>
                     <PresaleBox>
                         <CardTitle>Presale Launcher</CardTitle>
-                        <PresaleButton disabled={disableButton || presaleStarted} isLoading={presaleButtonLoading} isWaiting={waitingForApprovalForPresale} onClick={()=>{handleClickPresaleButton();}}>
+                        <Button disabled={disableButton} isPermanentlyDisabled={presaleStarted} isLoading={presaleButtonLoading} isWaiting={waitingForApprovalForPresale} onClick={()=>{handleClickPresaleButton();}}>
                             {waitingForApprovalForPresale && 'Waiting for approval'}
                             {presaleButtonLoading && 'Launching 🚀...'}
                             {!presaleStarted && !waitingForApprovalForPresale && !presaleButtonLoading && 'Start Presale'}
                             {presaleStarted && !waitingForApprovalForPresale && !presaleButtonLoading && 'Presale Launched'}
-                        </PresaleButton>
+                        </Button>
                     </PresaleBox>
                     <PauseContractBox>
                         <CardTitle>Pause Contract</CardTitle>
@@ -265,6 +265,15 @@ const Button = styled.button<IProps>`
     cursor: pointer;
 
     ${ ({disabled}) => disabled && `
+        // background: rgba(22, 25, 31, 0.24);
+        &:hover {
+            transform: scale(1) perspective(1px)
+        }
+        cursor: auto;
+    `}
+
+    ${ ({isPermanentlyDisabled}) => isPermanentlyDisabled && `
+        background: rgba(22, 25, 31, 0.24);
         &:hover {
             transform: scale(1) perspective(1px)
         }
@@ -306,17 +315,5 @@ const Button = styled.button<IProps>`
         }`
     }
 `
-
-const PresaleButton = styled(Button)`
-    ${ ({disabled}) => disabled && `
-        background: rgba(22, 25, 31, 0.24);
-        &:hover {
-            transform: scale(1) perspective(1px)
-        }
-        cursor: auto;
-    `}
-`
-
-
 
 export default OnlyOwner;
