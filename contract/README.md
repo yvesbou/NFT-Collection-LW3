@@ -29,6 +29,35 @@ forge script script/CryptoDevs.s.sol:CryptoDevsScript --rpc-url $GOERLI_RPC_URL 
 
 ```
 
+### Local Blockchain with Anvil (Foundry)
+
+Set up a local blockchain like this
+
+```shell
+# set up fresh local blockchain
+anvil
+
+# if you want to fork an existing blockchain, because you need to interact with existing contracts, e.g on goerli testnet
+anvil -f https://eth-goerli.g.alchemy.com/v2/<your_api_keys>
+```
+
+#### Deploy the CryptoDevs NFT Smart Contract
+
+- specify the script which deploys the contract `script/<scriptName>.s.sol:<contractName>
+- fork-url is the url from the local blockchain see terminal
+- take a private key from the one of the accounts that are displayed
+- run the following command
+
+```
+forge script script/CryptoDevs.s.sol:CryptoDevsScript --fork-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
+```
+
+#### Make Function Calls
+
+Use `cast call <args>` for reading from contract.
+
+Use `cast send <args>` for writing to contract.
+
 ### Test contracts
 
 Using foundry
