@@ -44,6 +44,7 @@ const OnlyOwner: NextPage = () => {
 	// });
 
     const handleClickPauseButton = async () => {
+        console.log("click")
         // waiting for approval
         setWaitingForApproval(true);
         await sleep(3000);
@@ -80,10 +81,12 @@ const OnlyOwner: NextPage = () => {
                     </PresaleBox>
                     <PauseContractBox>
                         <CardTitle>Pause Contract</CardTitle>
-                        <PauseContractButton isLoading={pauseButtonLoading} isWaiting={waitingForApproval} onClick={() => {handleClickPauseButton();}}>
+                        <PauseContractButton disabled={pauseButtonLoading || waitingForApproval} isLoading={pauseButtonLoading} isWaiting={waitingForApproval} onClick={() => {handleClickPauseButton();}}>
                             {waitingForApproval && 'Waiting for approval'}
-                            {pauseButtonLoading && 'Pausing...'}
-                            {!waitingForApproval && !pauseButtonLoading && 'Pause'}
+                            {!paused && pauseButtonLoading && 'Pausing...'}
+                            {paused && pauseButtonLoading && 'Resuming...'}
+                            {!paused && !waitingForApproval && !pauseButtonLoading && 'Pause'}
+                            {paused && !waitingForApproval && !pauseButtonLoading && 'Resume'}
                         </PauseContractButton>
                     </PauseContractBox>
                 </Grid>
@@ -216,7 +219,6 @@ const PresaleLaunchButton = styled.button`
     cursor: pointer;
 `
 
-// const pulse = 
 
 const pulse = keyframes`
     0% { opacity: 0 }
@@ -243,14 +245,23 @@ const PauseContractButton = styled.button<IProps>`
 
     ${ ({isWaiting}) => isWaiting && `
         background: rgba(22, 25, 31, 0.24);
+        font-size: 20px;
+        &:hover {
+            transform: scale(1) perspective(1px)
+        }
+        cursor: auto;
     `}
 
     ${ ({isLoading}) => isLoading && css`
         background-image: linear-gradient(270deg, #FF6257, #FF5CA0);
         position: relative;
+        &:hover {
+            transform: scale(1) perspective(1px)
+        }
+        cursor: auto;
         &::after {
             animation-name: ${pulse};
-            animation-duration: 500ms;
+            animation-duration: 800ms;
             animation-direction: alternate;
             animation-iteration-count: infinite;
             animation-timing-function: ease-in-out;
