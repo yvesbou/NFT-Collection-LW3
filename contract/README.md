@@ -43,7 +43,7 @@ anvil -f https://eth-goerli.g.alchemy.com/v2/<your_api_keys>
 
 #### Deploy the CryptoDevs NFT Smart Contract
 
-- specify the script which deploys the contract `script/<scriptName>.s.sol:<contractName>
+- specify the script which deploys the contract `script/<scriptName>.s.sol:<contractName>`
 - fork-url is the url from the local blockchain see terminal
 - take a private key from the one of the accounts that are displayed
 - run the following command
