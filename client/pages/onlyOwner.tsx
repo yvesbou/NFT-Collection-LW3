@@ -4,7 +4,7 @@ import Image from 'next/image';
 import Navbar from '../components/Navbar';
 import styles from '../styles/Home.module.css';
 import styled, { keyframes, css } from "styled-components";
-import { useAccount, useContractRead } from 'wagmi';
+import { useAccount, useBalance, useContractRead, usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
 import CryptoDevsAbi from "../abi/abi"
 import { time } from 'console';
 
@@ -31,6 +31,12 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 const OnlyOwner: NextPage = () => {
 
 	const { address, isConnected } = useAccount();
+
+    const { data: balanceData, isError: balanceError, isLoading: balanceIsLoading } = useBalance({
+        addressOrName: '0x8f26244700c47572198f0f8e8c7f671a0b79219f',
+        watch: true
+      })
+      
     const [isOwner, setIsOwner] = useState(false);
 
     const [waitingForApprovalForWithdraw, setWaitingForApprovalForWithdraw] = useState(false);
@@ -46,8 +52,30 @@ const OnlyOwner: NextPage = () => {
     const [paused, setPaused] = useState(false);
     const [presaleStarted, setPresaleStarted] = useState(false);
 
+    /// wagmi hooks ///
 
-	// wagmi hooks
+    // withdraw
+    const { config: contractWriteConfig } = usePrepareContractWrite({
+        ...contractConfig,
+        functionName: 'withdraw',
+      });
+    
+    const {
+        data: withdrawData,
+        write: withdraw,
+        isLoading: isWithdrawLoadingForApproval,
+        isSuccess: isWithdrawStarted,
+        error: withdrawError,
+    } = useContractWrite(contractWriteConfig);
+
+    const {
+        data: txData,
+        isSuccess: txSuccess,
+        error: txError,
+      } = useWaitForTransaction({
+        hash: withdrawData?.hash,
+      });
+
 	const { data: ownerAddress } = useContractRead({
 		...contractConfig,
 		functionName: 'owner',
@@ -144,11 +172,11 @@ const OnlyOwner: NextPage = () => {
                     <WithdrawBox>
                         <CardTitle>Total Received Ether</CardTitle>
                         <WithdrawBoxEtherSymbolPlaceholder><Image src="/ethereum-eth-logo.svg" width="30" height="30"></Image></WithdrawBoxEtherSymbolPlaceholder>
-                        <WithdrawBoxEtherAmount>0.124</WithdrawBoxEtherAmount>
-                        <Button disabled={disableButton} isLoading={withdrawButtonLoading} isWaiting={waitingForApprovalForWithdraw} onClick={()=>{handleClickWithdrawButton();}}>
-                            {waitingForApprovalForWithdraw && 'Waiting for approval'}
-                            {withdrawButtonLoading && 'Withdrawing...'}
-                            {!waitingForApprovalForWithdraw && !withdrawButtonLoading && 'Withdraw'}
+                        <WithdrawBoxEtherAmount> {balanceData?.formatted} {balanceData?.symbol}</WithdrawBoxEtherAmount>
+                        <Button disabled={disableButton} isLoading={isWithdrawStarted} isWaiting={isWithdrawLoadingForApproval} onClick={()=>{withdraw?.();}}>
+                            {isWithdrawLoadingForApproval && 'Waiting for approval'}
+                            {isWithdrawStarted && 'Withdrawing...'}
+                            {!isWithdrawLoadingForApproval && !isWithdrawStarted && 'Withdraw'}
                         </Button>
                     </WithdrawBox>
                     <PresaleBox>
