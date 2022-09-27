@@ -6,8 +6,12 @@ import { useAccount, useContractRead } from "wagmi";
 import CryptoDevsAbi from "../abi/abi"
 
 
+// const contractConfig = {
+// 	addressOrName: '0x96788D3aA03B6afAE42F15c059934ac53094Aca8',
+// 	contractInterface: CryptoDevsAbi.abi,
+// };
 const contractConfig = {
-	addressOrName: '0x96788D3aA03B6afAE42F15c059934ac53094Aca8',
+	addressOrName: '0x4b651dcc3c2e4d2fa6fef95d73eaec48432b5d6a',
 	contractInterface: CryptoDevsAbi.abi,
 };
 

@@ -45,10 +45,13 @@ anvil -f https://eth-goerli.g.alchemy.com/v2/<your_api_keys>
 
 - specify the script which deploys the contract `script/<scriptName>.s.sol:<contractName>`
 - fork-url is the url from the local blockchain see terminal
-- take a private key from the one of the accounts that are displayed
+- add private key to arguments
+  - take a private key from the one of the accounts if you just wanna play around in the console
+  - if you want to interact with the local blockchain with your frontend you need to use a key from your browser wallet
 - run the following command
 
 ```
+# never use the private keys from anvil, there are for sure bots that drain the account immediately if there are tokens
 forge script script/CryptoDevs.s.sol:CryptoDevsScript --fork-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
 ```
 
