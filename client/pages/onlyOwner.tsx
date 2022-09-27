@@ -9,8 +9,12 @@ import CryptoDevsAbi from "../abi/abi"
 import { time } from 'console';
 
 
+// const contractConfig = {
+// 	addressOrName: '0x96788D3aA03B6afAE42F15c059934ac53094Aca8',
+// 	contractInterface: CryptoDevsAbi.abi,
+// };
 const contractConfig = {
-	addressOrName: '0x96788D3aA03B6afAE42F15c059934ac53094Aca8',
+	addressOrName: '0x8f26244700c47572198f0f8e8c7f671a0b79219f',
 	contractInterface: CryptoDevsAbi.abi,
 };
 
@@ -26,7 +30,8 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const OnlyOwner: NextPage = () => {
 
-	const { address } = useAccount();
+	const { address, isConnected } = useAccount();
+    const [isOwner, setIsOwner] = useState(false);
 
     const [waitingForApprovalForWithdraw, setWaitingForApprovalForWithdraw] = useState(false);
     const [withdrawButtonLoading, setWithdrawButtonLoading] = useState(false);
@@ -41,12 +46,26 @@ const OnlyOwner: NextPage = () => {
     const [paused, setPaused] = useState(false);
     const [presaleStarted, setPresaleStarted] = useState(false);
 
-    // wagmi hooks
-	// const { data: ownerAddress } = useContractRead({
-	// 	...contractConfig,
-	// 	functionName: 'owner',
-	// 	watch: true,
-	// });
+
+	// wagmi hooks
+	const { data: ownerAddress } = useContractRead({
+		...contractConfig,
+		functionName: 'owner',
+		watch: true,
+	  });
+
+	// react hooks
+	useEffect(() => {
+		if (ownerAddress) {
+			console.log(ownerAddress);
+			console.log(address)
+			const isOwner = address === ownerAddress.toString();
+			setIsOwner(isOwner);
+			console.log(isOwner)
+
+		}
+	  }, [ownerAddress])
+
 
     useEffect(() => {
         const waiting: boolean = (
@@ -119,6 +138,8 @@ const OnlyOwner: NextPage = () => {
                         This is the "Only Owner Page" which is only visible to {address?.slice(0,5)}...{address?.slice(-4,address.length)}, the address which deployed the smart contracts.
                     </Info>
                 </InfoPlaceholder>
+                {
+                    (isConnected && isOwner) &&
                 <Grid>
                     <WithdrawBox>
                         <CardTitle>Total Received Ether</CardTitle>
@@ -150,6 +171,7 @@ const OnlyOwner: NextPage = () => {
                         </Button>
                     </PauseContractBox>
                 </Grid>
+                }
             </main>
         </div>
     );
