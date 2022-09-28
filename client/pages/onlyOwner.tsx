@@ -14,7 +14,7 @@ import { time } from 'console';
 // 	contractInterface: CryptoDevsAbi.abi,
 // };
 const contractConfig = {
-	addressOrName: '0x8f26244700c47572198f0f8e8c7f671a0b79219f',
+	addressOrName: '0xa7328fcb002e0ce55ff6a56e3499f0ef01b77692',
 	contractInterface: CryptoDevsAbi.abi,
 };
 
@@ -33,7 +33,7 @@ const OnlyOwner: NextPage = () => {
 	const { address, isConnected } = useAccount();
 
     const { data: balanceData, isError: balanceError, isLoading: balanceIsLoading } = useBalance({
-        addressOrName: '0x8f26244700c47572198f0f8e8c7f671a0b79219f',
+        addressOrName: '0xa7328fcb002e0ce55ff6a56e3499f0ef01b77692',
         watch: true
     })
     
@@ -69,12 +69,13 @@ const OnlyOwner: NextPage = () => {
     } = useContractWrite(contractWriteConfig);
 
     const {
-        data: txData,
+        data: withdrawTxData,
         isSuccess: txSuccess,
         error: txError,
       } = useWaitForTransaction({
         hash: withdrawData?.hash,
         onSuccess(data) {
+            // can also land here if transaction fails because of lack of gas
             console.log('Success', data)
         },
         onError(error) {
@@ -104,13 +105,14 @@ const OnlyOwner: NextPage = () => {
         console.log(`withdrawData?.hash - ${withdrawData?.hash}`)
         // console.log(isWithdrawLoadingForApproval.valueOf.)
         // console.log(isWithdrawStarted.valueOf[Symbol])
+        console.log(`isWithdrawStarted - ${isWithdrawStarted}`)
         console.log(`withdrawError?.message - ${withdrawError?.message}`)
-        console.log(`txData?.status - ${txData?.status}`)
+        console.log(`txData?.status - ${withdrawTxData?.status}`)
         // console.log(txSuccess.valueOf.name)
         console.log(`txError?.message - ${txError?.message}`)
     
     
-    }, [withdrawData, isWithdrawLoadingForApproval, isWithdrawStarted, withdrawError, txData, txSuccess, txError])
+    }, [withdrawData, isWithdrawLoadingForApproval, isWithdrawStarted, withdrawError, withdrawTxData, txSuccess, txError])
 
 
     useEffect(() => {
@@ -123,7 +125,9 @@ const OnlyOwner: NextPage = () => {
             pauseButtonLoading
             );
         setDisableButton(waiting);
-    }, [waitingForApprovalForWithdraw, waitingForApprovalForPresale, waitingForApprovalForPausing, withdrawButtonLoading, presaleButtonLoading, pauseButtonLoading])
+        console.log(`disableButton - ${withdrawTxData?.status}`)
+        console.log(`isWithdrawStarted - ${isWithdrawStarted}`)
+    }, [isWithdrawLoadingForApproval, waitingForApprovalForPresale, waitingForApprovalForPausing, isWithdrawStarted, presaleButtonLoading, pauseButtonLoading])
     
 
     const handleClickPauseButton = async () => {

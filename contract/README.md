@@ -61,7 +61,7 @@ anvil -f https://eth-goerli.g.alchemy.com/v2/<your_api_keys>
 - run the following command
 
 ```
-# never use the private keys from anvil, there are for sure bots that drain the account immediately if there are tokens
+# never use the private keys from anvil with your wallet with real ether, there are for sure bots that drain the account immediately if there are tokens
 forge script script/CryptoDevs.s.sol:CryptoDevsScript --fork-url http://localhost:8545 --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 --broadcast
 ```
 
