@@ -30,12 +30,8 @@ const Navbar: FC = () => {
 	// react hooks
 	useEffect(() => {
 		if (ownerAddress) {
-			console.log(ownerAddress);
-			console.log(address)
 			const isOwner = address === ownerAddress.toString();
 			setIsOwner(isOwner);
-			console.log(isOwner)
-
 		}
 	  }, [ownerAddress])
 

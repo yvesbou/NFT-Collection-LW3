@@ -40,7 +40,9 @@ const OnlyOwner: NextPage = () => {
     const [isOwner, setIsOwner] = useState(false);
 
     const [waitingForApprovalForWithdraw, setWaitingForApprovalForWithdraw] = useState(false);
-    const [withdrawButtonLoading, setWithdrawButtonLoading] = useState(false);
+    const [isLoadingForWithdrawExecution, setIsLoadingForWithdrawExecution] = useState(false);
+    const [isWithdrawButtonLoading, setIsWithdrawButtonLoading] = useState(false);
+
     const [waitingForApprovalForPresale, setWaitingForApprovalForPresale] = useState(false);
     const [presaleButtonLoading, setPresaleButtonLoading] = useState(false);
     const [waitingForApprovalForPausing, setWaitingForApprovalForPausing] = useState(false);
@@ -77,6 +79,7 @@ const OnlyOwner: NextPage = () => {
         onSuccess(data) {
             // can also land here if transaction fails because of lack of gas
             console.log('Success', data)
+            setIsLoadingForWithdrawExecution(false);
         },
         onError(error) {
             console.log('Error', error)
@@ -92,42 +95,43 @@ const OnlyOwner: NextPage = () => {
 	// react hooks
 	useEffect(() => {
 		if (ownerAddress) {
-			console.log(ownerAddress);
-			console.log(address)
 			const isOwner = address === ownerAddress.toString();
 			setIsOwner(isOwner);
-			console.log(isOwner)
-
 		}
 	}, [ownerAddress])
 
+
     useEffect(() => {
-        console.log(`withdrawData?.hash - ${withdrawData?.hash}`)
-        // console.log(isWithdrawLoadingForApproval.valueOf.)
-        // console.log(isWithdrawStarted.valueOf[Symbol])
-        console.log(`isWithdrawStarted - ${isWithdrawStarted}`)
-        console.log(`withdrawError?.message - ${withdrawError?.message}`)
-        console.log(`txData?.status - ${withdrawTxData?.status}`)
-        // console.log(txSuccess.valueOf.name)
-        console.log(`txError?.message - ${txError?.message}`)
+        // if approval is about to happen, waiting for execution also starts
+        if (isWithdrawLoadingForApproval) setIsLoadingForWithdrawExecution(true);
+    }, [isWithdrawLoadingForApproval])
+
+    useEffect(() => {
+        // beginning of a new transaction
+        if (isWithdrawLoadingForApproval && isLoadingForWithdrawExecution) setIsWithdrawButtonLoading(false);
+        // approval through wallet submitted, wait for transaction completion
+        if (!isWithdrawLoadingForApproval && isLoadingForWithdrawExecution) setIsWithdrawButtonLoading(true);
+        // transaction broadcasted and executed or failed
+        if (!isWithdrawLoadingForApproval && !isLoadingForWithdrawExecution) setIsWithdrawButtonLoading(false);
+    }, [isWithdrawLoadingForApproval, isLoadingForWithdrawExecution])
     
     
-    }, [withdrawData, isWithdrawLoadingForApproval, isWithdrawStarted, withdrawError, withdrawTxData, txSuccess, txError])
+// , isWithdrawLoadingForApproval, isWithdrawStarted, withdrawError, withdrawTxData, txSuccess, txError
 
 
     useEffect(() => {
         const waiting: boolean = (
             isWithdrawLoadingForApproval || 
-            waitingForApprovalForPresale || 
-            waitingForApprovalForPausing ||
-            isWithdrawStarted ||
-            presaleButtonLoading ||
-            pauseButtonLoading
+            isLoadingForWithdrawExecution //||
+            // waitingForApprovalForPresale || 
+            // waitingForApprovalForPausing ||
+            // isWithdrawStarted ||
+            // presaleButtonLoading ||
+            // pauseButtonLoading
             );
         setDisableButton(waiting);
-        console.log(`disableButton - ${withdrawTxData?.status}`)
-        console.log(`isWithdrawStarted - ${isWithdrawStarted}`)
-    }, [isWithdrawLoadingForApproval, waitingForApprovalForPresale, waitingForApprovalForPausing, isWithdrawStarted, presaleButtonLoading, pauseButtonLoading])
+
+    }, [isWithdrawLoadingForApproval, isLoadingForWithdrawExecution])
     
 
     const handleClickPauseButton = async () => {
@@ -144,22 +148,6 @@ const OnlyOwner: NextPage = () => {
         // state change => UI change
         setPaused(true);
         setPauseButtonLoading(false);
-    }
-
-    const handleClickWithdrawButton = async () => {
-        console.log("click")
-        // waiting for approval
-        setWaitingForApprovalForWithdraw(true);
-        await sleep(3000);
-        setWaitingForApprovalForWithdraw(false);
-        // UI shows that state is loading
-        setWithdrawButtonLoading(true);
-        await sleep(5000);
-        // smart contract call is made => wagmi contractwrite
-        // listening to change of smart contract state => wagmi hook contractRead
-        // state change => UI change
-        // setPaused(true);
-        setWithdrawButtonLoading(false);
     }
 
     const handleClickPresaleButton = async () => {
@@ -195,10 +183,10 @@ const OnlyOwner: NextPage = () => {
                         <CardTitle>Total Received Ether</CardTitle>
                         <WithdrawBoxEtherSymbolPlaceholder><Image src="/ethereum-eth-logo.svg" width="30" height="30"></Image></WithdrawBoxEtherSymbolPlaceholder>
                         <WithdrawBoxEtherAmount> {balanceData?.formatted} {balanceData?.symbol}</WithdrawBoxEtherAmount>
-                        <Button disabled={disableButton} isLoading={isWithdrawStarted} isWaiting={isWithdrawLoadingForApproval} onClick={()=>{withdraw?.();}}>
+                        <Button disabled={disableButton} isLoading={isWithdrawButtonLoading} isWaiting={isWithdrawLoadingForApproval} onClick={()=>{withdraw?.();}}>
                             {isWithdrawLoadingForApproval && 'Waiting for approval'}
-                            {isWithdrawStarted && 'Withdrawing...'}
-                            {!isWithdrawLoadingForApproval && !isWithdrawStarted && 'Withdraw'}
+                            {isWithdrawButtonLoading && 'Withdrawing...'}
+                            {!isWithdrawLoadingForApproval && !isWithdrawButtonLoading && 'Withdraw'}
                         </Button>
                     </WithdrawBox>
                     <PresaleBox>
