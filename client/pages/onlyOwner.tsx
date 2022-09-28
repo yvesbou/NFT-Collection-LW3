@@ -35,8 +35,8 @@ const OnlyOwner: NextPage = () => {
     const { data: balanceData, isError: balanceError, isLoading: balanceIsLoading } = useBalance({
         addressOrName: '0x8f26244700c47572198f0f8e8c7f671a0b79219f',
         watch: true
-      })
-      
+    })
+    
     const [isOwner, setIsOwner] = useState(false);
 
     const [waitingForApprovalForWithdraw, setWaitingForApprovalForWithdraw] = useState(false);
@@ -74,13 +74,19 @@ const OnlyOwner: NextPage = () => {
         error: txError,
       } = useWaitForTransaction({
         hash: withdrawData?.hash,
-      });
+        onSuccess(data) {
+            console.log('Success', data)
+        },
+        onError(error) {
+            console.log('Error', error)
+        },
+    });
 
 	const { data: ownerAddress } = useContractRead({
 		...contractConfig,
 		functionName: 'owner',
 		watch: true,
-	  });
+	});
 
 	// react hooks
 	useEffect(() => {
@@ -92,15 +98,27 @@ const OnlyOwner: NextPage = () => {
 			console.log(isOwner)
 
 		}
-	  }, [ownerAddress])
+	}, [ownerAddress])
+
+    useEffect(() => {
+        console.log(`withdrawData?.hash - ${withdrawData?.hash}`)
+        // console.log(isWithdrawLoadingForApproval.valueOf.)
+        // console.log(isWithdrawStarted.valueOf[Symbol])
+        console.log(`withdrawError?.message - ${withdrawError?.message}`)
+        console.log(`txData?.status - ${txData?.status}`)
+        // console.log(txSuccess.valueOf.name)
+        console.log(`txError?.message - ${txError?.message}`)
+    
+    
+    }, [withdrawData, isWithdrawLoadingForApproval, isWithdrawStarted, withdrawError, txData, txSuccess, txError])
 
 
     useEffect(() => {
         const waiting: boolean = (
-            waitingForApprovalForWithdraw || 
+            isWithdrawLoadingForApproval || 
             waitingForApprovalForPresale || 
             waitingForApprovalForPausing ||
-            withdrawButtonLoading ||
+            isWithdrawStarted ||
             presaleButtonLoading ||
             pauseButtonLoading
             );

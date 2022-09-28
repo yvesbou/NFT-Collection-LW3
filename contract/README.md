@@ -1,6 +1,6 @@
 # Contracts
 
-### Deployed Contracts
+## Deployed Contracts
 
 | Contract                | Network | Contract address                                                                                                                  |
 | ----------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
@@ -9,7 +9,7 @@
 
 \*Whitelist is from another [repo](https://github.com/yvesbou/Whitelist-DApp_Contract).
 
-### Project built with Foundry
+## Project built with Foundry
 
 Start your own Foundry Project with:
 
@@ -27,6 +27,16 @@ source .env
 # To deploy and verify our contract
 forge script script/CryptoDevs.s.sol:CryptoDevsScript --rpc-url $GOERLI_RPC_URL  --private-key $GOERLI_PRIVATE_KEY --broadcast --verify --etherscan-api-key $ETHERSCAN_API_KEY -vvvv
 
+```
+
+### Test contracts
+
+Using foundry
+
+```shell
+forge test
+# for more details, logging with emit, add verbosity 1 up to 5 v's
+forge test -vvvv
 ```
 
 ### Local Blockchain with Anvil (Foundry)
@@ -61,14 +71,17 @@ Use `cast call <args>` for reading from contract.
 
 Use `cast send <args>` for writing to contract.
 
-### Test contracts
-
-Using foundry
+Selection of useful `cast` commands
 
 ```shell
-forge test
-# for more details, logging with emit, add verbosity 1 up to 5 v's
-forge test -vvvv
+# send ether from EOA to address
+cast send --ledger 0x8f26244700c47572198f0f8e8c7f671a0b79219f --value 5ether --from 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266
+# get balance of address
+cast balance 0x8f26244700c47572198f0f8e8c7f671a0b79219f
+# call function with return type of address
+cast call 0x8f26244700c47572198f0f8e8c7f671a0b79219f "owner()(address)"
+# call withdraw function from smart contract
+cast send 0x8f26244700c47572198f0f8e8c7f671a0b79219f "withdraw()" --private-key $GOERLI_PRIVATE_KEY
 ```
 
 ## Troubleshooting

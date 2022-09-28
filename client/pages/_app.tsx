@@ -10,6 +10,7 @@ import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 const { chains, provider, webSocketProvider } = configureChains(
   [
     chain.goerli,
+    chain.localhost
   ],
   [
     jsonRpcProvider({
@@ -18,12 +19,12 @@ const { chains, provider, webSocketProvider } = configureChains(
         http: `http://localhost:8545`,
       }),
     }),
-    alchemyProvider({
-      // This is Alchemy's default API key.
-      // You can get your own at https://dashboard.alchemyapi.io
-      apiKey: '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC',
-    }),
-    publicProvider(),
+    // alchemyProvider({
+    //   // This is Alchemy's default API key.
+    //   // You can get your own at https://dashboard.alchemyapi.io
+    //   apiKey: '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC',
+    // }),
+    // publicProvider(),
     
   ]
 );

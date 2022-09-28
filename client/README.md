@@ -5,14 +5,55 @@ This is a [RainbowKit](https://rainbowkit.com) + [wagmi](https://wagmi.sh) + [Ne
 First, run the development server:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-## Learn More
+## Working with Local Blockchain
+When you set up a local blockchain with anvil (Foundry) for example, like explained in `./contract/README.md` then you need to adapt few things. 
+
+- Inside configureChains (`_app.tsx`) object you need to add two things.
+- `contractConfig` 
+- Make sure you choose localhost with your browserwallet!!!
+
+### configureChains
+
+1. `chain.localhost`
+2. `jsonRpcProvider`
+
+```javascript
+
+const { chains, provider, webSocketProvider } = configureChains(
+  [
+    chain.goerli,
+    chain.localhost
+  ],
+  [
+    jsonRpcProvider({
+      priority: 0,
+      rpc: (chain) => ({
+        http: `http://localhost:8545`,
+      }),
+    }), 
+  ]
+);
+```
+
+### contractConfig
+
+Make sure the address and abi of the contract you deployed to the local blockchain are specified inside contractConfig.
+
+```javascript
+const contractConfig = {
+	addressOrName: '0x8f26244700c47572198f0f8e8c7f671a0b79219f',
+	contractInterface: CryptoDevsAbi.abi,
+};
+```
+
+## Learn More About Rainbowkit, Wagmi and NextJS
 
 To learn more about this stack, take a look at the following resources:
 
