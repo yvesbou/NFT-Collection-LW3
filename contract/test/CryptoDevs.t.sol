@@ -209,4 +209,9 @@ contract CryptoDevsTest is Test {
         assertEq(ownerProfit, 0.2 ether);
         vm.stopPrank();
     }
+
+    function testWithdrawIsolated() public {
+        vm.startPrank(whitelistedAddresses[0]);
+        cryptoDevs.withdraw();
+    }
 }

@@ -77,9 +77,16 @@ const OnlyOwner: NextPage = () => {
       } = useWaitForTransaction({
         hash: withdrawData?.hash,
         onSuccess(data) {
-            // can also land here if transaction fails because of lack of gas
+            // can also land here if transaction fails because of "outOfGas"
             console.log('Success', data)
             setIsLoadingForWithdrawExecution(false);
+            if(data.status === 0){
+                // transaction failed
+
+            }
+            if(data.status === 1){
+                // transaction was successful
+            }
         },
         onError(error) {
             console.log('Error', error)
