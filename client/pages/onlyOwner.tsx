@@ -32,7 +32,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const OnlyOwner: NextPage = () => {
 
-    const [openFailureSnackbar, closeFailureSnackbar] = useSnackbar();
+    const [openFailureSnackbar, closeFailureSnackbar] = useSnackbar(failureOptions);
     const [openSuccessSnackbar, closeSuccessSnackbar] = useSnackbar(successOptions);
 
 	const { address, isConnected } = useAccount();
@@ -85,14 +85,15 @@ const OnlyOwner: NextPage = () => {
             // can also land here if transaction fails because of "outOfGas"
             console.log('Success', data)
             setIsLoadingForWithdrawExecution(false);
+            const link: string = 'https://goerli.etherscan.io/tx/' + `${withdrawData?.hash}`
             if(data.status === 0){
                 // transaction failed
-                // openFailureSnackbar(`Transaction failed: ${withdrawData?.hash}`, failureOptions, 10000)
+                openFailureSnackbar(<p>Transaction ❌: <a href={link}>{withdrawData?.hash.slice(0,5)}...{withdrawData?.hash.slice(-4,withdrawData?.hash.length)}🔗</a></p>, 10000)
 
             }
             if(data.status === 1){
                 // transaction was successful
-                openSuccessSnackbar(`Transaction successful: ${withdrawData?.hash}`, 10000)
+                openSuccessSnackbar(<p> Transaction ✅ : <a href={link}>{withdrawData?.hash.slice(0,5)}...{withdrawData?.hash.slice(-4,withdrawData?.hash.length)}🔗</a></p>, 10000)
             }
         },
         onError(error) {

@@ -1,17 +1,21 @@
 const successOptions = {
     position: 'bottom-right',
-    node:'some message',
     style: {
-      backgroundColor: 'midnightblue',
-      border: '2px solid lightgreen',
-      color: 'lightblue',
-      fontFamily: 'Menlo, monospace',
-      fontSize: '20px',
-      textAlign: 'center',
+        backgroundColor: 'rgb(17,103,7)',
+        border: '2px solid lightgreen',
+        color: 'white',
+        fontSize: '18px',
+        fontWeight: '600',
+        padding: '10px',
+        margin: '0px',
+        height: '50px',
+        borderRadius: '15px',
+        boxShadow: '10px 7px 46px 3px rgba(35,232,59,0.77)'
+    
     },
     closeStyle: {
-      color: 'lightcoral',
-      fontSize: '16px',
+      color: 'white',
+      fontSize: '14px',
     },
   }
 
