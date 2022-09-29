@@ -1,17 +1,21 @@
 const failureOptions = {
-    position: 'bottom-center',
+    position: 'bottom-right',
     style: {
         backgroundColor: 'red',
         border: '2px solid lightred',
         color: 'white',
-        borderRaidus: '12px',
-        fontSize: '24px',
-        textAlign: 'center',
-        padding: '15px'
+        fontSize: '18px',
+        fontWeight: '600',
+        padding: '10px',
+        margin: '0px',
+        height: '50px',
+        borderRadius: '15px',
+        boxShadow: '10px 7px 46px 3px rgba(255,20,20,0.77)'
+    
     },
     closeStyle: {
       color: 'white',
-      fontSize: '16px',
+      fontSize: '14px',
     },
   }
 

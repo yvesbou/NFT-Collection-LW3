@@ -1,7 +1,7 @@
 const successOptions = {
     position: 'bottom-right',
     style: {
-        backgroundColor: 'rgb(17,103,7)',
+        backgroundColor: 'green',
         border: '2px solid lightgreen',
         color: 'white',
         fontSize: '18px',

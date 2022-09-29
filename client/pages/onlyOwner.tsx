@@ -88,7 +88,7 @@ const OnlyOwner: NextPage = () => {
             const link: string = 'https://goerli.etherscan.io/tx/' + `${withdrawData?.hash}`
             if(data.status === 0){
                 // transaction failed
-                openFailureSnackbar(<p>Transaction ❌: <a href={link}>{withdrawData?.hash.slice(0,5)}...{withdrawData?.hash.slice(-4,withdrawData?.hash.length)}🔗</a></p>, 10000)
+                openFailureSnackbar(<p>Transaction Failed: <a href={link}>{withdrawData?.hash.slice(0,5)}...{withdrawData?.hash.slice(-4,withdrawData?.hash.length)}🔗</a></p>, 10000)
 
             }
             if(data.status === 1){
