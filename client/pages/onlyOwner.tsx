@@ -6,7 +6,9 @@ import styles from '../styles/Home.module.css';
 import styled, { keyframes, css } from "styled-components";
 import { useAccount, useBalance, useContractRead, usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
 import CryptoDevsAbi from "../abi/abi"
-import { time } from 'console';
+import { useSnackbar } from 'react-simple-snackbar'
+import failureOptions from '../components/SnackbarUI/failure';
+import successOptions from '../components/SnackbarUI/success';
 
 
 // const contractConfig = {
@@ -29,6 +31,9 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 
 const OnlyOwner: NextPage = () => {
+
+    const [openFailureSnackbar, closeFailureSnackbar] = useSnackbar();
+    const [openSuccessSnackbar, closeSuccessSnackbar] = useSnackbar(successOptions);
 
 	const { address, isConnected } = useAccount();
 
@@ -82,10 +87,12 @@ const OnlyOwner: NextPage = () => {
             setIsLoadingForWithdrawExecution(false);
             if(data.status === 0){
                 // transaction failed
+                // openFailureSnackbar(`Transaction failed: ${withdrawData?.hash}`, failureOptions, 10000)
 
             }
             if(data.status === 1){
                 // transaction was successful
+                openSuccessSnackbar(`Transaction successful: ${withdrawData?.hash}`, 10000)
             }
         },
         onError(error) {
