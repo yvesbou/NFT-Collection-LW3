@@ -52,16 +52,12 @@ const OnlyOwner: NextPage = () => {
     const [isLoadingForSetPausedExecution, setIsLoadingForSetPausedExecution] = useState(false);
     const [isSetPausedButtonLoading, setIsSetPausedButtonLoading] = useState(false);
 
-    const [waitingForApprovalForPresale, setWaitingForApprovalForPresale] = useState(false);
-    const [presaleButtonLoading, setPresaleButtonLoading] = useState(false);
-    // const [waitingForApprovalForPausing, setWaitingForApprovalForPausing] = useState(false);
-    // const [pauseButtonLoading, setPauseButtonLoading] = useState(false);
+    // preSale
+    const [isLoadingForStartPresaleExecution, setIsLoadingForStartPresaleExecution] = useState(false);
+    const [isStartPresaleButtonLoading, setIsStartPresaleButtonLoading] = useState(false);
+
 
     const [disableButton, setDisableButton] = useState(false);
-
-    // will be replaced by wagmi hooks
-    // const [paused, setPaused] = useState(false);
-    const [presaleStarted, setPresaleStarted] = useState(false);
 
     // checker for ownership
 
@@ -81,7 +77,7 @@ const OnlyOwner: NextPage = () => {
 
     /// wagmi hooks ///
 
-    // start withdraw ///
+    // start withdraw section ///
     const { config: withdrawExecuteOnChainConfig } = usePrepareContractWrite({
         ...contractConfig,
         functionName: 'withdraw',
@@ -140,8 +136,8 @@ const OnlyOwner: NextPage = () => {
         if (!isWithdrawLoadingForApproval && !isLoadingForWithdrawExecution) setIsWithdrawButtonLoading(false);
     }, [isWithdrawLoadingForApproval, isLoadingForWithdrawExecution])
     
-    /// end withdraw ///
-    /// start pause ///
+    /// end withdraw section ///
+    /// start pause section ///
 
     const { data: paused } = useContractRead({
 		...contractConfig,
@@ -184,6 +180,7 @@ const OnlyOwner: NextPage = () => {
             }
         },
         onError(error) {
+            setIsLoadingForSetPausedExecution(false);
             console.log('Error', error)
         },
     });
@@ -206,7 +203,77 @@ const OnlyOwner: NextPage = () => {
         if (!isSetPausedLoadingForApproval && !isLoadingForSetPausedExecution) setIsSetPausedButtonLoading(false);
     }, [isSetPausedLoadingForApproval, isLoadingForSetPausedExecution])
 
-    /// end pause ///
+    /// end pause section ///
+    /// start presale launch section ///
+
+    const { data: presaleEndedDatetime } = useContractRead({
+		...contractConfig,
+		functionName: 'presaleEnded',
+	});
+    const { data: presaleStarted } = useContractRead({
+		...contractConfig,
+		functionName: 'presaleStarted',
+        watch: true
+	});
+
+    const { config: startPresaleExecuteOnChainConfig } = usePrepareContractWrite({
+        ...contractConfig,
+        functionName: 'startPresale',
+    });
+
+    const {
+        data: startPresaleData,
+        write: startPresale,
+        isLoading: isStartPresaleLoadingForApproval,
+        isSuccess: isStartPresaleStarted,
+        error: startPresaleError,
+    } = useContractWrite(startPresaleExecuteOnChainConfig);
+    
+    const {
+        data: startPresaleTxData,
+        isSuccess: startPresaleTxSuccess,
+        error: startPresaleTxError,
+      } = useWaitForTransaction({
+        hash: startPresaleData?.hash,
+        onSuccess(data) {
+            // can also land here if transaction fails because of "outOfGas"
+            console.log('Success', data)
+            setIsLoadingForStartPresaleExecution(false);
+            const link: string = 'https://goerli.etherscan.io/tx/' + `${startPresaleData?.hash}`
+            if(data.status === 0){
+                // transaction failed
+                openFailureSnackbar(<p>Transaction Failed: <a href={link}>{startPresaleData?.hash.slice(0,5)}...{startPresaleData?.hash.slice(-4,startPresaleData?.hash.length)}🔗</a></p>, 10000)
+            }
+            if(data.status === 1){
+                // transaction was successful
+                openSuccessSnackbar(<p> Transaction ✅ : <a href={link}>{startPresaleData?.hash.slice(0,5)}...{startPresaleData?.hash.slice(-4,startPresaleData?.hash.length)}🔗</a></p>, 10000)
+            }
+        },
+        onError(error) {
+            setIsLoadingForStartPresaleExecution(false);
+            console.log('Error', error)
+        },
+    });
+
+    useEffect(() => {
+        if (startPresaleError) setIsLoadingForStartPresaleExecution(false);
+    }, [startPresaleError])
+
+    useEffect(() => {
+        // if approval is about to happen, waiting for execution also starts
+        if (isStartPresaleLoadingForApproval) setIsLoadingForStartPresaleExecution(true);
+    }, [isStartPresaleLoadingForApproval])
+
+    useEffect(() => {
+        // beginning of a new transaction
+        if (isStartPresaleLoadingForApproval && isLoadingForStartPresaleExecution) setIsStartPresaleButtonLoading(false);
+        // approval through wallet submitted, wait for transaction completion
+        if (!isStartPresaleLoadingForApproval && isLoadingForStartPresaleExecution) setIsStartPresaleButtonLoading(true);
+        // transaction broadcasted and executed or failed
+        if (!isStartPresaleLoadingForApproval && !isLoadingForStartPresaleExecution) setIsStartPresaleButtonLoading(false);
+    }, [isStartPresaleLoadingForApproval, isLoadingForStartPresaleExecution])
+
+    /// end presale launch section ///
 
     // set all buttons disabled, as soon as on-chain action is initiated and not completed
     useEffect(() => {
@@ -214,50 +281,20 @@ const OnlyOwner: NextPage = () => {
             isWithdrawLoadingForApproval || 
             isLoadingForWithdrawExecution ||
             isSetPausedLoadingForApproval ||
-            isLoadingForSetPausedExecution
-            // waitingForApprovalForPresale || 
-            // waitingForApprovalForPausing ||
-            // isWithdrawStarted ||
-            // presaleButtonLoading ||
-            // pauseButtonLoading
+            isLoadingForSetPausedExecution ||
+            isStartPresaleLoadingForApproval ||
+            isLoadingForStartPresaleExecution
             );
         setDisableButton(waiting);
 
-    }, [isWithdrawLoadingForApproval, isLoadingForWithdrawExecution, isSetPausedLoadingForApproval, isLoadingForSetPausedExecution])
+    }, [isWithdrawLoadingForApproval,
+        isLoadingForWithdrawExecution,
+        isSetPausedLoadingForApproval,
+        isLoadingForSetPausedExecution,
+        isStartPresaleLoadingForApproval,
+        isLoadingForStartPresaleExecution
+    ])
     
-
-    // const handleClickPauseButton = async () => {
-    //     console.log("click")
-    //     // waiting for approval
-    //     setWaitingForApprovalForPausing(true);
-    //     await sleep(3000);
-    //     setWaitingForApprovalForPausing(false);
-    //     // UI shows that state is loading
-    //     setPauseButtonLoading(true);
-    //     await sleep(5000);
-    //     // smart contract call is made => wagmi contractwrite
-    //     // listening to change of smart contract state => wagmi hook contractRead
-    //     // state change => UI change
-    //     setPaused(true);
-    //     setPauseButtonLoading(false);
-    // }
-
-    const handleClickPresaleButton = async () => {
-        console.log("click")
-        // waiting for approval
-        setWaitingForApprovalForPresale(true);
-        await sleep(3000);
-        setWaitingForApprovalForPresale(false);
-        // UI shows that state is loading
-        setPresaleButtonLoading(true);
-        await sleep(5000);
-        // smart contract call is made => wagmi contractwrite
-        // listening to change of smart contract state => wagmi hook contractRead
-        // state change => UI change
-        // setPaused(true);
-        setPresaleStarted(true);
-        setPresaleButtonLoading(false);
-    }
 
     return(
         <div className={styles.container}>
@@ -283,11 +320,12 @@ const OnlyOwner: NextPage = () => {
                     </WithdrawBox>
                     <PresaleBox>
                         <CardTitle>Presale Launcher</CardTitle>
-                        <Button disabled={disableButton} isPermanentlyDisabled={presaleStarted} isLoading={presaleButtonLoading} isWaiting={waitingForApprovalForPresale} onClick={()=>{handleClickPresaleButton();}}>
-                            {waitingForApprovalForPresale && 'Waiting for approval'}
-                            {presaleButtonLoading && 'Launching 🚀...'}
-                            {!presaleStarted && !waitingForApprovalForPresale && !presaleButtonLoading && 'Start Presale'}
-                            {presaleStarted && !waitingForApprovalForPresale && !presaleButtonLoading && 'Presale Launched'}
+                        <WithdrawBoxEtherAmount>{presaleEndedDatetime}</WithdrawBoxEtherAmount>
+                        <Button disabled={disableButton} isPermanentlyDisabled={presaleStarted?.symbol} isLoading={isStartPresaleButtonLoading} isWaiting={isStartPresaleLoadingForApproval} onClick={()=>{startPresale?.();}}>
+                            {isStartPresaleLoadingForApproval && 'Waiting for approval'}
+                            {isStartPresaleButtonLoading && 'Launching 🚀...'}
+                            {!presaleStarted && !isStartPresaleLoadingForApproval && !isStartPresaleButtonLoading && 'Start Presale'}
+                            {presaleStarted && !isStartPresaleLoadingForApproval && !isStartPresaleButtonLoading && 'Presale Launched'}
                         </Button>
                     </PresaleBox>
                     <PauseContractBox>
