@@ -7,8 +7,8 @@ import styled, { keyframes, css } from "styled-components";
 import { useAccount, useBalance, useContractRead, usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
 import CryptoDevsAbi from "../abi/abi"
 import { useSnackbar } from 'react-simple-snackbar'
-import failureOptions from '../components/SnackbarUI/failure';
-import successOptions from '../components/SnackbarUI/success';
+import failureOptions from '../components/SnackbarUIOptions/failure';
+import successOptions from '../components/SnackbarUIOptions/success';
 
 
 // const contractConfig = {
@@ -44,64 +44,28 @@ const OnlyOwner: NextPage = () => {
     
     const [isOwner, setIsOwner] = useState(false);
 
-    const [waitingForApprovalForWithdraw, setWaitingForApprovalForWithdraw] = useState(false);
+    // withdraw
     const [isLoadingForWithdrawExecution, setIsLoadingForWithdrawExecution] = useState(false);
     const [isWithdrawButtonLoading, setIsWithdrawButtonLoading] = useState(false);
 
+    // setPaused
+    const [isLoadingForSetPausedExecution, setIsLoadingForSetPausedExecution] = useState(false);
+    const [isSetPausedButtonLoading, setIsSetPausedButtonLoading] = useState(false);
+
     const [waitingForApprovalForPresale, setWaitingForApprovalForPresale] = useState(false);
     const [presaleButtonLoading, setPresaleButtonLoading] = useState(false);
-    const [waitingForApprovalForPausing, setWaitingForApprovalForPausing] = useState(false);
-    const [pauseButtonLoading, setPauseButtonLoading] = useState(false);
+    // const [waitingForApprovalForPausing, setWaitingForApprovalForPausing] = useState(false);
+    // const [pauseButtonLoading, setPauseButtonLoading] = useState(false);
 
     const [disableButton, setDisableButton] = useState(false);
 
     // will be replaced by wagmi hooks
-    const [paused, setPaused] = useState(false);
+    // const [paused, setPaused] = useState(false);
     const [presaleStarted, setPresaleStarted] = useState(false);
 
-    /// wagmi hooks ///
+    // checker for ownership
 
-    // withdraw
-    const { config: contractWriteConfig } = usePrepareContractWrite({
-        ...contractConfig,
-        functionName: 'withdraw',
-      });
-    
-    const {
-        data: withdrawData,
-        write: withdraw,
-        isLoading: isWithdrawLoadingForApproval,
-        isSuccess: isWithdrawStarted,
-        error: withdrawError,
-    } = useContractWrite(contractWriteConfig);
-
-    const {
-        data: withdrawTxData,
-        isSuccess: txSuccess,
-        error: txError,
-      } = useWaitForTransaction({
-        hash: withdrawData?.hash,
-        onSuccess(data) {
-            // can also land here if transaction fails because of "outOfGas"
-            console.log('Success', data)
-            setIsLoadingForWithdrawExecution(false);
-            const link: string = 'https://goerli.etherscan.io/tx/' + `${withdrawData?.hash}`
-            if(data.status === 0){
-                // transaction failed
-                openFailureSnackbar(<p>Transaction Failed: <a href={link}>{withdrawData?.hash.slice(0,5)}...{withdrawData?.hash.slice(-4,withdrawData?.hash.length)}🔗</a></p>, 10000)
-
-            }
-            if(data.status === 1){
-                // transaction was successful
-                openSuccessSnackbar(<p> Transaction ✅ : <a href={link}>{withdrawData?.hash.slice(0,5)}...{withdrawData?.hash.slice(-4,withdrawData?.hash.length)}🔗</a></p>, 10000)
-            }
-        },
-        onError(error) {
-            console.log('Error', error)
-        },
-    });
-
-	const { data: ownerAddress } = useContractRead({
+    const { data: ownerAddress } = useContractRead({
 		...contractConfig,
 		functionName: 'owner',
 		watch: true,
@@ -114,6 +78,47 @@ const OnlyOwner: NextPage = () => {
 			setIsOwner(isOwner);
 		}
 	}, [ownerAddress])
+
+    /// wagmi hooks ///
+
+    // start withdraw ///
+    const { config: withdrawExecuteOnChainConfig } = usePrepareContractWrite({
+        ...contractConfig,
+        functionName: 'withdraw',
+    });
+    
+    const {
+        data: withdrawData,
+        write: withdraw,
+        isLoading: isWithdrawLoadingForApproval,
+        isSuccess: isWithdrawStarted,
+        error: withdrawError,
+    } = useContractWrite(withdrawExecuteOnChainConfig);
+
+    const {
+        data: withdrawTxData,
+        isSuccess: withdrawTxSuccess,
+        error: withdrawTxError,
+      } = useWaitForTransaction({
+        hash: withdrawData?.hash,
+        onSuccess(data) {
+            // can also land here if transaction fails because of "outOfGas"
+            console.log('Success', data)
+            setIsLoadingForWithdrawExecution(false);
+            const link: string = 'https://goerli.etherscan.io/tx/' + `${withdrawData?.hash}`
+            if(data.status === 0){
+                // transaction failed
+                openFailureSnackbar(<p>Transaction Failed: <a href={link}>{withdrawData?.hash.slice(0,5)}...{withdrawData?.hash.slice(-4,withdrawData?.hash.length)}🔗</a></p>, 10000)
+            }
+            if(data.status === 1){
+                // transaction was successful
+                openSuccessSnackbar(<p> Transaction ✅ : <a href={link}>{withdrawData?.hash.slice(0,5)}...{withdrawData?.hash.slice(-4,withdrawData?.hash.length)}🔗</a></p>, 10000)
+            }
+        },
+        onError(error) {
+            console.log('Error', error)
+        },
+    });
 
 
     useEffect(() => {
@@ -130,14 +135,76 @@ const OnlyOwner: NextPage = () => {
         if (!isWithdrawLoadingForApproval && !isLoadingForWithdrawExecution) setIsWithdrawButtonLoading(false);
     }, [isWithdrawLoadingForApproval, isLoadingForWithdrawExecution])
     
+    /// end withdraw ///
+    /// start pause ///
+
+    const { data: paused } = useContractRead({
+		...contractConfig,
+		functionName: '_paused',
+		watch: true,
+	});
+
+    const { config: setPausedExecuteOnChainConfig } = usePrepareContractWrite({
+        ...contractConfig,
+        functionName: 'setPaused',
+    });
     
-// , isWithdrawLoadingForApproval, isWithdrawStarted, withdrawError, withdrawTxData, txSuccess, txError
+    const {
+        data: setPausedData,
+        write: setPaused,
+        isLoading: isSetPausedLoadingForApproval,
+        isSuccess: isSetPausedStarted,
+        error: setPausedError,
+    } = useContractWrite(setPausedExecuteOnChainConfig);
 
+    const {
+        data: setPausedTxData,
+        isSuccess: txSuccess,
+        error: txError,
+      } = useWaitForTransaction({
+        hash: setPausedData?.hash,
+        onSuccess(data) {
+            // can also land here if transaction fails because of "outOfGas"
+            console.log('Success', data)
+            setIsLoadingForSetPausedExecution(false);           
+            const link: string = 'https://goerli.etherscan.io/tx/' + `${setPausedData?.hash}`
+            if(data.status === 0){
+                // transaction failed
+                openFailureSnackbar(<p>Transaction Failed: <a href={link}>{setPausedData?.hash.slice(0,5)}...{setPausedData?.hash.slice(-4,setPausedData?.hash.length)}🔗</a></p>, 10000)
+            }
+            if(data.status === 1){
+                // transaction was successful
+                openSuccessSnackbar(<p> Transaction ✅ : <a href={link}>{setPausedData?.hash.slice(0,5)}...{setPausedData?.hash.slice(-4,setPausedData?.hash.length)}🔗</a></p>, 10000)
+            }
+        },
+        onError(error) {
+            console.log('Error', error)
+        },
+    });
 
+    useEffect(() => {
+        // if approval is about to happen, waiting for execution also starts
+        if (isSetPausedLoadingForApproval) setIsLoadingForSetPausedExecution(true);
+    }, [isSetPausedLoadingForApproval])
+
+    useEffect(() => {
+        // beginning of a new transaction
+        if (isSetPausedLoadingForApproval && isLoadingForSetPausedExecution) setIsSetPausedButtonLoading(false);
+        // approval through wallet submitted, wait for transaction completion
+        if (!isSetPausedLoadingForApproval && isLoadingForSetPausedExecution) setIsSetPausedButtonLoading(true);
+        // transaction broadcasted and executed or failed
+        if (!isSetPausedLoadingForApproval && !isLoadingForSetPausedExecution) setIsSetPausedButtonLoading(false);
+    }, [isSetPausedLoadingForApproval, isLoadingForSetPausedExecution])
+
+    /// end pause ///
+
+    // set all buttons disabled, as soon as on-chain action is initiated and not completed
     useEffect(() => {
         const waiting: boolean = (
             isWithdrawLoadingForApproval || 
-            isLoadingForWithdrawExecution //||
+            isLoadingForWithdrawExecution ||
+            isSetPausedLoadingForApproval ||
+            isLoadingForSetPausedExecution
             // waitingForApprovalForPresale || 
             // waitingForApprovalForPausing ||
             // isWithdrawStarted ||
@@ -146,24 +213,24 @@ const OnlyOwner: NextPage = () => {
             );
         setDisableButton(waiting);
 
-    }, [isWithdrawLoadingForApproval, isLoadingForWithdrawExecution])
+    }, [isWithdrawLoadingForApproval, isLoadingForWithdrawExecution, isSetPausedLoadingForApproval, isLoadingForSetPausedExecution])
     
 
-    const handleClickPauseButton = async () => {
-        console.log("click")
-        // waiting for approval
-        setWaitingForApprovalForPausing(true);
-        await sleep(3000);
-        setWaitingForApprovalForPausing(false);
-        // UI shows that state is loading
-        setPauseButtonLoading(true);
-        await sleep(5000);
-        // smart contract call is made => wagmi contractwrite
-        // listening to change of smart contract state => wagmi hook contractRead
-        // state change => UI change
-        setPaused(true);
-        setPauseButtonLoading(false);
-    }
+    // const handleClickPauseButton = async () => {
+    //     console.log("click")
+    //     // waiting for approval
+    //     setWaitingForApprovalForPausing(true);
+    //     await sleep(3000);
+    //     setWaitingForApprovalForPausing(false);
+    //     // UI shows that state is loading
+    //     setPauseButtonLoading(true);
+    //     await sleep(5000);
+    //     // smart contract call is made => wagmi contractwrite
+    //     // listening to change of smart contract state => wagmi hook contractRead
+    //     // state change => UI change
+    //     setPaused(true);
+    //     setPauseButtonLoading(false);
+    // }
 
     const handleClickPresaleButton = async () => {
         console.log("click")
@@ -215,12 +282,12 @@ const OnlyOwner: NextPage = () => {
                     </PresaleBox>
                     <PauseContractBox>
                         <CardTitle>Pause Contract</CardTitle>
-                        <Button disabled={disableButton} isLoading={pauseButtonLoading} isWaiting={waitingForApprovalForPausing} onClick={() => {handleClickPauseButton();}}>
-                            {waitingForApprovalForPausing && 'Waiting for approval'}
-                            {!paused && pauseButtonLoading && 'Pausing...'}
-                            {paused && pauseButtonLoading && 'Resuming...'}
-                            {!paused && !waitingForApprovalForPausing && !pauseButtonLoading && 'Pause'}
-                            {paused && !waitingForApprovalForPausing && !pauseButtonLoading && 'Resume'}
+                        <Button disabled={disableButton} isLoading={isSetPausedButtonLoading} isWaiting={isSetPausedLoadingForApproval} onClick={() => {setPaused?.();}}>
+                            {isSetPausedLoadingForApproval && 'Waiting for approval'}
+                            {!paused && isSetPausedButtonLoading && 'Pausing...'}
+                            {paused && isSetPausedButtonLoading && 'Resuming...'}
+                            {!paused && !isSetPausedLoadingForApproval && !isSetPausedButtonLoading && 'Pause'}
+                            {paused && !isSetPausedLoadingForApproval && !isSetPausedButtonLoading && 'Resume'}
                         </Button>
                     </PauseContractBox>
                 </Grid>

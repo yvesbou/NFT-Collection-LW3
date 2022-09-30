@@ -25,7 +25,7 @@ const Navbar: FC = () => {
 		...contractConfig,
 		functionName: 'owner',
 		watch: true,
-	  });
+	});
 
 	// react hooks
 	useEffect(() => {
