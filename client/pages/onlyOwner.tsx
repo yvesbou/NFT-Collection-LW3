@@ -16,7 +16,7 @@ import successOptions from '../components/SnackbarUIOptions/success';
 // 	contractInterface: CryptoDevsAbi.abi,
 // };
 const contractConfig = {
-	addressOrName: '0xa7328fcb002e0ce55ff6a56e3499f0ef01b77692',
+	addressOrName: '0x997906e53deb18c25faf8f8762544e2ad78669b6',
 	contractInterface: CryptoDevsAbi.abi,
 };
 
@@ -38,7 +38,7 @@ const OnlyOwner: NextPage = () => {
 	const { address, isConnected } = useAccount();
 
     const { data: balanceData, isError: balanceError, isLoading: balanceIsLoading } = useBalance({
-        addressOrName: '0xa7328fcb002e0ce55ff6a56e3499f0ef01b77692',
+        addressOrName: '0x997906e53deb18c25faf8f8762544e2ad78669b6',
         watch: true
     })
     
@@ -116,9 +116,14 @@ const OnlyOwner: NextPage = () => {
             }
         },
         onError(error) {
+            setIsLoadingForWithdrawExecution(false);
             console.log('Error', error)
         },
     });
+
+    useEffect(() => {
+        if (withdrawError) setIsLoadingForWithdrawExecution(false);
+    }, [withdrawError])
 
 
     useEffect(() => {
