@@ -189,6 +189,10 @@ const OnlyOwner: NextPage = () => {
     });
 
     useEffect(() => {
+        if (setPausedError) setIsLoadingForSetPausedExecution(false);
+    }, [setPausedError])
+
+    useEffect(() => {
         // if approval is about to happen, waiting for execution also starts
         if (isSetPausedLoadingForApproval) setIsLoadingForSetPausedExecution(true);
     }, [isSetPausedLoadingForApproval])
@@ -288,7 +292,7 @@ const OnlyOwner: NextPage = () => {
                     </PresaleBox>
                     <PauseContractBox>
                         <CardTitle>Pause Contract</CardTitle>
-                        <Button disabled={disableButton} isLoading={isSetPausedButtonLoading} isWaiting={isSetPausedLoadingForApproval} onClick={() => {console.log("clicked"); setPaused?.();}}>
+                        <Button disabled={disableButton} isLoading={isSetPausedButtonLoading} isWaiting={isSetPausedLoadingForApproval} onClick={() => {setPaused?.();}}>
                             {isSetPausedLoadingForApproval && 'Waiting for approval'}
                             {!paused && isSetPausedButtonLoading && 'Pausing...'}
                             {paused && isSetPausedButtonLoading && 'Resuming...'}
