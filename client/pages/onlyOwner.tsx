@@ -28,8 +28,6 @@ interface IProps {
     onClick?: () => void;
   }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
 
 const OnlyOwner: NextPage = () => {
 
@@ -207,10 +205,6 @@ const OnlyOwner: NextPage = () => {
 
     /// end pause section ///
     /// start presale launch section ///
-
-    // todo:
-
-    // have a state that stores the datetime when the presale started and ended computed in local time
 
     const { data: presaleEndedDatetime } = useContractRead({
 		...contractConfig,
@@ -391,6 +385,8 @@ const Grid = styled.div`
     grid-template-rows: repeat(2, 1fr);
     grid-column-gap: 20px;
     grid-row-gap: 20px;
+    box-shadow: 0px 0px 32px 0px #efd5ff;
+    border-radius: 15px;
 `
 
 const WithdrawBox = styled.div`
@@ -404,6 +400,7 @@ const WithdrawBox = styled.div`
     grid-template-rows: repeat(6, 1fr);
     grid-column-gap: 20px;
     grid-row-gap: 20px;
+    box-shadow: 0px 0px 5px 0px #515ada;
 `
 const PresaleBox = styled.div`
     grid-area: 1 / 2 / 2 / 3;
@@ -416,6 +413,7 @@ const PresaleBox = styled.div`
     grid-template-rows: repeat(6, 1fr);
     grid-column-gap: 20px;
     grid-row-gap: 20px;
+    box-shadow: 0px 0px 5px 0px #515ada;
 `
 const PauseContractBox = styled.div`
     grid-area: 2 / 1 / 3 / 2;
@@ -428,6 +426,7 @@ const PauseContractBox = styled.div`
     grid-template-rows: repeat(6, 1fr);
     grid-column-gap: 20px;
     grid-row-gap: 20px;
+    box-shadow: 0px 0px 5px 0px #515ada;
 `
 
 const CardTitle = styled.div`

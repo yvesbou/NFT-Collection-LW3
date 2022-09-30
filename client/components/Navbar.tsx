@@ -39,7 +39,8 @@ const Navbar: FC = () => {
 		<Container>
 			<Link href="/"><TitleNavbar>💻 CryptoDevs</TitleNavbar></Link>
 			<SubContainer>
-				{isConnected && isOwner ? (<Link href="onlyOwner"><OnlyOwnerButton>ONLY OWNER ✋🛑</OnlyOwnerButton></Link>) : (<a target="_blank" rel="noopener noreferrer" href="https://goerli.etherscan.io/address/0x96788d3aa03b6afae42f15c059934ac53094aca8#code"><OnlyOwnerButton>View Smart Contract 📝</OnlyOwnerButton></a>)}
+				<Link href="/preSale"><NavbarElement>PRESALE 🎟</NavbarElement></Link>
+				{isConnected && isOwner ? (<Link href="onlyOwner"><NavbarElement>ONLY OWNER ✋🛑</NavbarElement></Link>) : (<a target="_blank" rel="noopener noreferrer" href="https://goerli.etherscan.io/address/0x96788d3aa03b6afae42f15c059934ac53094aca8#code"><NavbarElement>View Smart Contract 📝</NavbarElement></a>)}
 				<ConnectButton />
 			</SubContainer>
 		</Container>)
@@ -56,7 +57,7 @@ const Container = styled.div`
 `
 
 const SubContainer = styled.div`
-	width: 40%;
+	width: 60%;
 	display: flex;
 	flex-direction: row;
 	align-items: flex-end;
@@ -69,13 +70,14 @@ const TitleNavbar = styled.div`
 	cursor: pointer;
 `
 
-const OnlyOwnerButton = styled.button`
+const NavbarElement = styled.div`
 	padding: 10px;
 	border-radius: 12px;
 	border: transparent;
 	background-color: #F8F8F8;
-	letter-spacing: 0.1px;
-	font-weight: 900;
+	letter-spacing: 0.5px;
+	font-size: 16px;
+	font-weight: 600;
 	box-shadow: rgba(100, 100, 111, 0.3) 0px 7px 29px 0px;
 	transition-duration: 0.3s;
 	&:hover {

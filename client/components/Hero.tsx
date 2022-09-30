@@ -52,9 +52,11 @@ const ActionItem = styled.div`
 const Mint = styled.button`
     padding: 15px;
     font-size: 2rem;
-    // font-weight: 600;
+    letter-spacing: -1px;
+    font-weight: 600;
     color: white;
     background: -webkit-linear-gradient(10deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,1) 100%);
+    box-shadow: 0px 0px 10px 0px rgba(34,228,242,0.83);
     border-radius: 12px;
     border: transparent;
     transition-duration: 0.3s;
