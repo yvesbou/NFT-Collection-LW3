@@ -9,6 +9,7 @@ import CryptoDevsAbi from "../abi/abi"
 import { useSnackbar } from 'react-simple-snackbar'
 import failureOptions from '../components/SnackbarUIOptions/failure';
 import successOptions from '../components/SnackbarUIOptions/success';
+import dayjs from 'dayjs';
 
 
 // const contractConfig = {
@@ -55,7 +56,8 @@ const OnlyOwner: NextPage = () => {
     // preSale
     const [isLoadingForStartPresaleExecution, setIsLoadingForStartPresaleExecution] = useState(false);
     const [isStartPresaleButtonLoading, setIsStartPresaleButtonLoading] = useState(false);
-
+    const [isPresaleButtonDisabledPermanently, setPresaleButtonDisabledPermantenly] = useState(false);
+    const [presaleEndDatetimeString, setpresaleEndDatetimeString] = useState("");
 
     const [disableButton, setDisableButton] = useState(false);
 
@@ -206,6 +208,10 @@ const OnlyOwner: NextPage = () => {
     /// end pause section ///
     /// start presale launch section ///
 
+    // todo:
+
+    // have a state that stores the datetime when the presale started and ended computed in local time
+
     const { data: presaleEndedDatetime } = useContractRead({
 		...contractConfig,
 		functionName: 'presaleEnded',
@@ -215,6 +221,11 @@ const OnlyOwner: NextPage = () => {
 		functionName: 'presaleStarted',
         watch: true
 	});
+
+    useEffect(() => {
+        if(presaleStarted) setPresaleButtonDisabledPermantenly(true);
+    }, [presaleStarted])
+    
 
     const { config: startPresaleExecuteOnChainConfig } = usePrepareContractWrite({
         ...contractConfig,
@@ -295,6 +306,14 @@ const OnlyOwner: NextPage = () => {
         isLoadingForStartPresaleExecution
     ])
     
+    useEffect(() => {
+        console.log(presaleEndedDatetime?.toString())
+        var presaleEndDatetimeString = presaleEndedDatetime?.toString();
+        var presaleEndDateTimeNum: number | undefined = presaleEndDatetimeString ? parseInt(presaleEndDatetimeString) : undefined;
+        presaleEndDateTimeNum ? presaleEndDateTimeNum *= 1000 : undefined;
+        setpresaleEndDatetimeString(dayjs(presaleEndDateTimeNum).format('DD/MM/YYYY, hh:mm:ss A'))
+    },[presaleEndedDatetime])
+    
 
     return(
         <div className={styles.container}>
@@ -320,8 +339,8 @@ const OnlyOwner: NextPage = () => {
                     </WithdrawBox>
                     <PresaleBox>
                         <CardTitle>Presale Launcher</CardTitle>
-                        <WithdrawBoxEtherAmount>{presaleEndedDatetime}</WithdrawBoxEtherAmount>
-                        <Button disabled={disableButton} isPermanentlyDisabled={presaleStarted?.symbol} isLoading={isStartPresaleButtonLoading} isWaiting={isStartPresaleLoadingForApproval} onClick={()=>{startPresale?.();}}>
+                        <WithdrawBoxEtherAmount>End: { presaleEndedDatetime?.toString() != '0' && presaleEndDatetimeString}</WithdrawBoxEtherAmount>
+                        <Button disabled={disableButton} isPermanentlyDisabled={isPresaleButtonDisabledPermanently} isLoading={isStartPresaleButtonLoading} isWaiting={isStartPresaleLoadingForApproval} onClick={()=>{startPresale?.();}}>
                             {isStartPresaleLoadingForApproval && 'Waiting for approval'}
                             {isStartPresaleButtonLoading && 'Launching 🚀...'}
                             {!presaleStarted && !isStartPresaleLoadingForApproval && !isStartPresaleButtonLoading && 'Start Presale'}
@@ -423,7 +442,7 @@ const WithdrawBoxEtherSymbolPlaceholder = styled.div`
 `
 
 const WithdrawBoxEtherAmount = styled.div`
-    grid-area: 3 / 2 / 5 / 5;
+    grid-area: 3 / 2 / 5 / 6;
     display: flex;
     justify-content: start;
     letter-spacing: 0.5px;
