@@ -152,6 +152,7 @@ const OnlyOwner: NextPage = () => {
     const { config: setPausedExecuteOnChainConfig } = usePrepareContractWrite({
         ...contractConfig,
         functionName: 'setPaused',
+        args: [!paused]
     });
     
     const {
@@ -287,7 +288,7 @@ const OnlyOwner: NextPage = () => {
                     </PresaleBox>
                     <PauseContractBox>
                         <CardTitle>Pause Contract</CardTitle>
-                        <Button disabled={disableButton} isLoading={isSetPausedButtonLoading} isWaiting={isSetPausedLoadingForApproval} onClick={() => {setPaused?.();}}>
+                        <Button disabled={disableButton} isLoading={isSetPausedButtonLoading} isWaiting={isSetPausedLoadingForApproval} onClick={() => {console.log("clicked"); setPaused?.();}}>
                             {isSetPausedLoadingForApproval && 'Waiting for approval'}
                             {!paused && isSetPausedButtonLoading && 'Pausing...'}
                             {paused && isSetPausedButtonLoading && 'Resuming...'}
