@@ -4,13 +4,21 @@ import Navbar from '../components/Navbar';
 import styles from '../styles/Home.module.css';
 import styled, { keyframes, css } from "styled-components";
 import { useAccount, useBalance, useContractRead, usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
-import CryptoDevsAbi from "../abi/abi"
 import { useSnackbar } from 'react-simple-snackbar'
 import failureOptions from '../components/SnackbarUIOptions/failure';
 import successOptions from '../components/SnackbarUIOptions/success';
 import Button from '../components/SmallerComponents/Button';
+import cryptoDevsConfig from '../contracts/CryptoDevsConfig';
+
 
 const PreSale: NextPage = () => {
+
+	const { address, isConnected } = useAccount();
+
+    const { config: presaleMintExecuteOnChainConfig } = usePrepareContractWrite({
+        ...cryptoDevsConfig,
+        functionName: 'setPaused',
+    });
 
     const eligibleForPresale = true;
 
@@ -22,9 +30,9 @@ const PreSale: NextPage = () => {
                     <MintActionAndDescriptionCard>
                         <MintTitle>Mint during Presale your NFT</MintTitle>
                         <PresaleEligibility>
-                            {eligibleForPresale ? "Your are lucky! You are eligible for presale 🎉": "Sorry. You are not whitelisted for this NFT sale."}
+                            {(eligibleForPresale && isConnected) ? `Your are lucky! Your address ${address?.slice(0,5)}...${address?.slice(-4,address.length)} is whitelisted for presale 🎉`: "Sorry. You are not whitelisted for this NFT sale."}
                         </PresaleEligibility>
-                        {eligibleForPresale && <PresaleMintButton>Mint</PresaleMintButton>}
+                        {eligibleForPresale && <PresaleMintButton>Presale Mint</PresaleMintButton>}
                     </MintActionAndDescriptionCard>
                     <NFTCardPlaceholder>
                         <NFTCard><br/>Reveal<br/>Your<br/>NFT<br/>Now!</NFTCard>

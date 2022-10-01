@@ -3,17 +3,13 @@ import Link from "next/link";
 import styled from "styled-components";
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { useAccount, useContractRead } from "wagmi";
-import CryptoDevsAbi from "../abi/abi"
+import cryptoDevsConfig from '../contracts/CryptoDevsConfig';
 
 
 // const contractConfig = {
 // 	addressOrName: '0x96788D3aA03B6afAE42F15c059934ac53094Aca8',
 // 	contractInterface: CryptoDevsAbi.abi,
 // };
-const contractConfig = {
-	addressOrName: '0x997906e53deb18c25faf8f8762544e2ad78669b6',
-	contractInterface: CryptoDevsAbi.abi,
-};
 
 const Navbar: FC = () => {
 	// states
@@ -22,7 +18,7 @@ const Navbar: FC = () => {
 
 	// wagmi hooks
 	const { data: ownerAddress } = useContractRead({
-		...contractConfig,
+		...cryptoDevsConfig,
 		functionName: 'owner',
 		watch: true,
 	});

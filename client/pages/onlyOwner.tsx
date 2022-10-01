@@ -3,25 +3,14 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Navbar from '../components/Navbar';
 import styles from '../styles/Home.module.css';
-import styled, { keyframes, css } from "styled-components";
+import styled from "styled-components";
 import { useAccount, useBalance, useContractRead, usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi';
-import CryptoDevsAbi from "../abi/abi"
 import { useSnackbar } from 'react-simple-snackbar'
 import failureOptions from '../components/SnackbarUIOptions/failure';
 import successOptions from '../components/SnackbarUIOptions/success';
 import dayjs from 'dayjs';
 import Button from '../components/SmallerComponents/Button';
-
-
-// const contractConfig = {
-// 	addressOrName: '0x96788D3aA03B6afAE42F15c059934ac53094Aca8',
-// 	contractInterface: CryptoDevsAbi.abi,
-// };
-const contractConfig = {
-	addressOrName: '0x997906e53deb18c25faf8f8762544e2ad78669b6',
-	contractInterface: CryptoDevsAbi.abi,
-};
-
+import cryptoDevsConfig from '../contracts/CryptoDevsConfig';
 
 
 
@@ -58,7 +47,7 @@ const OnlyOwner: NextPage = () => {
     // checker for ownership
 
     const { data: ownerAddress } = useContractRead({
-		...contractConfig,
+		...cryptoDevsConfig,
 		functionName: 'owner',
 		watch: true,
 	});
@@ -75,7 +64,7 @@ const OnlyOwner: NextPage = () => {
 
     // start withdraw section ///
     const { config: withdrawExecuteOnChainConfig } = usePrepareContractWrite({
-        ...contractConfig,
+        ...cryptoDevsConfig,
         functionName: 'withdraw',
     });
     
@@ -136,13 +125,13 @@ const OnlyOwner: NextPage = () => {
     /// start pause section ///
 
     const { data: paused } = useContractRead({
-		...contractConfig,
+		...cryptoDevsConfig,
 		functionName: '_paused',
 		watch: true,
 	});
 
     const { config: setPausedExecuteOnChainConfig } = usePrepareContractWrite({
-        ...contractConfig,
+        ...cryptoDevsConfig,
         functionName: 'setPaused',
         args: [!paused]
     });
@@ -203,11 +192,11 @@ const OnlyOwner: NextPage = () => {
     /// start presale launch section ///
 
     const { data: presaleEndedDatetime } = useContractRead({
-		...contractConfig,
+		...cryptoDevsConfig,
 		functionName: 'presaleEnded',
 	});
     const { data: presaleStarted } = useContractRead({
-		...contractConfig,
+		...cryptoDevsConfig,
 		functionName: 'presaleStarted',
         watch: true
 	});
@@ -218,7 +207,7 @@ const OnlyOwner: NextPage = () => {
     
 
     const { config: startPresaleExecuteOnChainConfig } = usePrepareContractWrite({
-        ...contractConfig,
+        ...cryptoDevsConfig,
         functionName: 'startPresale',
     });
 
