@@ -7,6 +7,7 @@ import failureOptions from '../components/SnackbarUIOptions/failure';
 import successOptions from '../components/SnackbarUIOptions/success';
 import cryptoDevsConfig from "../contracts/CryptoDevsConfig";
 import { ethers } from "ethers";
+import dayjs from "dayjs";
 
 const Hero: FC = () => {
 
@@ -26,8 +27,16 @@ const Hero: FC = () => {
 		functionName: 'maxTokenIds',
 	});
 
+    const { data: timestampEndPresale } = useContractRead({
+		...cryptoDevsConfig,
+		functionName: 'presaleEnded',
+        watch: true
+	});
+
     const [isLoadingForMintExecution, setIsLoadingForMintExecution] = useState(false);
     const [isMintButtonLoading, setIsMintButtonLoading] = useState(false);
+
+    const [presaleIsOver, setPresaleIsOver] = useState(false);
 
     const { config: mintExecuteOnChainConfig } = usePrepareContractWrite({
         ...cryptoDevsConfig,
@@ -90,6 +99,13 @@ const Hero: FC = () => {
         // transaction broadcasted and executed or failed
         if (!isMintLoadingForApproval && !isLoadingForMintExecution) setIsMintButtonLoading(false);
     }, [isMintLoadingForApproval, isLoadingForMintExecution])
+
+    useEffect(() => {
+        var presaleEndDatetimeString = timestampEndPresale?.toString();
+        var presaleEndDateTimeNum: number | undefined = presaleEndDatetimeString ? parseInt(presaleEndDatetimeString) : undefined;
+        presaleEndDateTimeNum ? presaleEndDateTimeNum *= 1000 : undefined;
+        setPresaleIsOver(dayjs(presaleEndDateTimeNum).isBefore(dayjs()));
+    },)
     
     return (
         <Container>
@@ -102,7 +118,13 @@ const Hero: FC = () => {
                     <MintTitle>Mint Your NFT</MintTitle>
                     <PresaleEligibility>{nftsMinted?.toString()} out of {totalNumberOfNFTs?.toString()} NFTs are minted.</PresaleEligibility>
                     {isConnected && 
-                        <PresaleMintButton isLoading={isMintButtonLoading} isWaiting={isMintLoadingForApproval} onClick={()=>{mint?.();}}>
+                        <PresaleMintButton
+                            isLoading={isMintButtonLoading}
+                            isWaiting={isMintLoadingForApproval}
+                            onClick={()=>{
+                                
+                                if(presaleIsOver) mint?.();
+                            }}>
                             {isMintLoadingForApproval && 'Waiting for approval'}
                             {isMintButtonLoading && 'Minting...'}
                             {!isMintLoadingForApproval && !isMintButtonLoading && 'Mint'}

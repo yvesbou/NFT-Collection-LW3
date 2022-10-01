@@ -10,6 +10,7 @@ import successOptions from '../components/SnackbarUIOptions/success';
 import Button from '../components/SmallerComponents/Button';
 import cryptoDevsConfig from '../contracts/CryptoDevsConfig';
 import { ethers } from 'ethers';
+import whitelistedAddresses from '../contracts/whitelistedAddresses';
 
 
 const PreSale: NextPage = () => {
@@ -17,7 +18,16 @@ const PreSale: NextPage = () => {
     const [openFailureSnackbar, closeFailureSnackbar] = useSnackbar(failureOptions);
     const [openSuccessSnackbar, closeSuccessSnackbar] = useSnackbar(successOptions);
 
+    const [mintSuccessful, setMintSuccessful] = useState(false);
+
 	const { address, isConnected } = useAccount();
+
+    const [eligibleForPresale, setEligibleForPresale] = useState(false);
+
+    useEffect(() => {
+        if (address != undefined) if (whitelistedAddresses.includes(address)) setEligibleForPresale(true);
+    }, [address])
+    
 
     const [isLoadingForPresaleMintExecution, setIsLoadingForPresaleMintExecution] = useState(false);
     const [isPresaleMintButtonLoading, setIsPresaleMintButtonLoading] = useState(false);
@@ -57,6 +67,7 @@ const PreSale: NextPage = () => {
             if(data.status === 1){
                 // transaction was successful
                 openSuccessSnackbar(<p> Transaction ✅ : <a href={link}>{presaleMintData?.hash.slice(0,5)}...{presaleMintData?.hash.slice(-4,presaleMintData?.hash.length)}🔗</a></p>, 10000)
+                setMintSuccessful(true);
             }
         },
         onError(error) {
@@ -64,12 +75,6 @@ const PreSale: NextPage = () => {
             console.log('Error', error)
         },
     });
-
-    useEffect(() => {
-      console.log(presaleMintError)
-      console.log(presaleMintTxError)
-
-    }, )
     
 
     useEffect(() => {
@@ -78,7 +83,10 @@ const PreSale: NextPage = () => {
 
     useEffect(() => {
         // if approval is about to happen, waiting for execution also starts
-        if (isPresaleMintLoadingForApproval) setIsLoadingForPresaleMintExecution(true);
+        if (isPresaleMintLoadingForApproval) {
+            setMintSuccessful(false);
+            setIsLoadingForPresaleMintExecution(true);
+        }
     }, [isPresaleMintLoadingForApproval])
 
     useEffect(() => {
@@ -90,7 +98,6 @@ const PreSale: NextPage = () => {
         if (!isPresaleMintLoadingForApproval && !isLoadingForPresaleMintExecution) setIsPresaleMintButtonLoading(false);
     }, [isPresaleMintLoadingForApproval, isLoadingForPresaleMintExecution])
 
-    const eligibleForPresale = true; // todo!!!
 
     return (
         <div className={styles.container}>
@@ -110,7 +117,12 @@ const PreSale: NextPage = () => {
                             </PresaleMintButton>}
                     </MintActionAndDescriptionCard>
                     <NFTCardPlaceholder>
-                        <NFTCard><br/>Reveal<br/>Your<br/>NFT<br/>Now!</NFTCard>
+                        <NFTCard hasToRotate={mintSuccessful}>
+                            <NFTCardInner hasToRotate={mintSuccessful}>
+                                <NFTCardFront><br/>Reveal<br/>Your<br/>NFT<br/>Now!</NFTCardFront>
+                                <NFTCardBack><br/>Your<br/>NFT<br/>is<br/>revealed!</NFTCardBack>
+                            </NFTCardInner>
+                        </NFTCard>
                     </NFTCardPlaceholder>
                 </Placeholder>
             </main>
@@ -142,8 +154,11 @@ const NFTCardPlaceholder = styled.div`
     display: flex;
     flex-direction: row;
 `
+interface INFTCard {
+    hasToRotate?: boolean;
+  }
 
-const NFTCard = styled.div`
+const NFTCard = styled.div<INFTCard>`
     margin: 20px;
     padding-left: 30px;
     padding-top: 10px;
@@ -153,10 +168,40 @@ const NFTCard = styled.div`
     white-space: pre-wrap;
     font-size: 44px;
     font-weight: 900;
+    background-color: transparent;
+    perspective: 1000px;
+`
+
+const NFTCardInner = styled.div<INFTCard>`
     background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 24%, rgba(0,0,0,1) 38%, rgba(11,11,11,1) 63%, rgba(28,28,28,1) 87%, rgba(40,40,40,1) 96%);
     border-radius: 12px;
     box-shadow: -1px 0px 10px 0px white inset;
     border-right: 0.5px solid #ffffff;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    ${ ({hasToRotate}) => hasToRotate && `
+        transform: rotateY(180deg);
+    `}
+`
+const NFTCardFront = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+`
+const NFTCardBack = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+    color: white;
+    transform: rotateY(180deg);
 `
 
 const MintTitle = styled.div`
