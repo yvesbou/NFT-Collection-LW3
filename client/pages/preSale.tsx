@@ -9,16 +9,79 @@ import failureOptions from '../components/SnackbarUIOptions/failure';
 import successOptions from '../components/SnackbarUIOptions/success';
 import Button from '../components/SmallerComponents/Button';
 import cryptoDevsConfig from '../contracts/CryptoDevsConfig';
+import { ethers } from 'ethers';
 
 
 const PreSale: NextPage = () => {
 
+    const [openFailureSnackbar, closeFailureSnackbar] = useSnackbar(failureOptions);
+    const [openSuccessSnackbar, closeSuccessSnackbar] = useSnackbar(successOptions);
+
 	const { address, isConnected } = useAccount();
+
+    const [isLoadingForPresaleMintExecution, setIsLoadingForPresaleMintExecution] = useState(false);
+    const [isPresaleMintButtonLoading, setIsPresaleMintButtonLoading] = useState(false);
 
     const { config: presaleMintExecuteOnChainConfig } = usePrepareContractWrite({
         ...cryptoDevsConfig,
-        functionName: 'setPaused',
+        functionName: 'presaleMint',
+        overrides: {
+            from: address,
+            value: ethers.utils.parseEther('0.01'),
+          },
     });
+
+    const {
+        data: presaleMintData,
+        write: presaleMint,
+        isLoading: isPresaleMintLoadingForApproval,
+        isSuccess: isPresaleMintStarted,
+        error: presaleMintError,
+    } = useContractWrite(presaleMintExecuteOnChainConfig);
+
+    const {
+        data:presaleMintwTxData,
+        isSuccess: presaleMintTxSuccess,
+        error: presaleMintTxError,
+      } = useWaitForTransaction({
+        hash: presaleMintData?.hash,
+        onSuccess(data) {
+            // can also land here if transaction fails because of "outOfGas"
+            console.log('Success', data)
+            setIsLoadingForPresaleMintExecution(false);
+            const link: string = 'https://goerli.etherscan.io/tx/' + `${presaleMintData?.hash}`
+            if(data.status === 0){
+                // transaction failed
+                openFailureSnackbar(<p>Transaction Failed: <a href={link}>{presaleMintData?.hash.slice(0,5)}...{presaleMintData?.hash.slice(-4,presaleMintData?.hash.length)}🔗</a></p>, 10000)
+            }
+            if(data.status === 1){
+                // transaction was successful
+                openSuccessSnackbar(<p> Transaction ✅ : <a href={link}>{presaleMintData?.hash.slice(0,5)}...{presaleMintData?.hash.slice(-4,presaleMintData?.hash.length)}🔗</a></p>, 10000)
+            }
+        },
+        onError(error) {
+            setIsLoadingForPresaleMintExecution(false);
+            console.log('Error', error)
+        },
+    });
+
+    useEffect(() => {
+        if (presaleMintError) setIsLoadingForPresaleMintExecution(false);
+    }, [presaleMintError])
+
+    useEffect(() => {
+        // if approval is about to happen, waiting for execution also starts
+        if (isPresaleMintLoadingForApproval) setIsLoadingForPresaleMintExecution(true);
+    }, [isPresaleMintLoadingForApproval])
+
+    useEffect(() => {
+        // beginning of a new transaction
+        if (isPresaleMintLoadingForApproval && isLoadingForPresaleMintExecution) setIsPresaleMintButtonLoading(false);
+        // approval through wallet submitted, wait for transaction completion
+        if (!isPresaleMintLoadingForApproval && isLoadingForPresaleMintExecution) setIsPresaleMintButtonLoading(true);
+        // transaction broadcasted and executed or failed
+        if (!isPresaleMintLoadingForApproval && !isLoadingForPresaleMintExecution) setIsPresaleMintButtonLoading(false);
+    }, [isPresaleMintLoadingForApproval, isLoadingForPresaleMintExecution])
 
     const eligibleForPresale = true;
 
@@ -32,7 +95,12 @@ const PreSale: NextPage = () => {
                         <PresaleEligibility>
                             {(eligibleForPresale && isConnected) ? `Your are lucky! Your address ${address?.slice(0,5)}...${address?.slice(-4,address.length)} is whitelisted for presale 🎉`: "Sorry. You are not whitelisted for this NFT sale."}
                         </PresaleEligibility>
-                        {eligibleForPresale && <PresaleMintButton>Presale Mint</PresaleMintButton>}
+                        {eligibleForPresale && 
+                            <PresaleMintButton isLoading={isPresaleMintButtonLoading} isWaiting={isPresaleMintLoadingForApproval} onClick={()=>{presaleMint?.()}}>
+                                {isPresaleMintLoadingForApproval && 'Waiting for approval'}
+                                {isPresaleMintButtonLoading && 'Minting...'}
+                                {!isPresaleMintLoadingForApproval && !isPresaleMintButtonLoading && 'Presale Mint'}
+                            </PresaleMintButton>}
                     </MintActionAndDescriptionCard>
                     <NFTCardPlaceholder>
                         <NFTCard><br/>Reveal<br/>Your<br/>NFT<br/>Now!</NFTCard>
