@@ -10,7 +10,8 @@ contract CryptoDevsScript is Script {
     function run() public {
         vm.broadcast();
         address whitelistAddress = 0x61390Fc02A4c21Bf4A6A60A03B287706A81b0489;
-        string memory METADATA_URL = "https://example.example";
+        string
+            memory METADATA_URL = "http://nft-collection-yvesbou.vercel.app/api/";
         new CryptoDevs(METADATA_URL, whitelistAddress);
     }
 }
