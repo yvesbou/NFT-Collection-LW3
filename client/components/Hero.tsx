@@ -75,6 +75,7 @@ const Hero: FC = () => {
             if(data.status === 1){
                 // transaction was successful
                 openSuccessSnackbar(<p> Transaction ✅ : <a href={link}>{mintData?.hash.slice(0,5)}...{mintData?.hash.slice(-4,mintData?.hash.length)}🔗</a></p>, 10000)
+                setMintSuccessful(true);
             }
         },
         onError(error) {

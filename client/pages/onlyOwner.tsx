@@ -194,6 +194,7 @@ const OnlyOwner: NextPage = () => {
     const { data: presaleEndedDatetime } = useContractRead({
 		...cryptoDevsConfig,
 		functionName: 'presaleEnded',
+        watch: true
 	});
     const { data: presaleStarted } = useContractRead({
 		...cryptoDevsConfig,

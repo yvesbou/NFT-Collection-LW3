@@ -15,18 +15,17 @@ const { chains, provider, webSocketProvider } = configureChains(
     chain.localhost
   ],
   [
-    jsonRpcProvider({
-      priority: 0,
-      rpc: (chain) => ({
-        http: `http://localhost:8545`,
-      }),
-    }),
-    // alchemyProvider({
-    //   // This is Alchemy's default API key.
-    //   // You can get your own at https://dashboard.alchemyapi.io
-    //   apiKey: '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC',
+    // jsonRpcProvider({
+    //   rpc: (chain) => ({
+    //     http: `http://localhost:8545`,
+    //   }),
     // }),
-    // publicProvider(),
+    alchemyProvider({
+      // This is Alchemy's default API key.
+      // You can get your own at https://dashboard.alchemyapi.io
+      apiKey: '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC',
+    }),
+    publicProvider(),
     
   ]
 );

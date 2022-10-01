@@ -10,8 +10,7 @@ contract CryptoDevsScript is Script {
     function run() public {
         vm.broadcast();
         address whitelistAddress = 0x61390Fc02A4c21Bf4A6A60A03B287706A81b0489;
-        string
-            memory METADATA_URL = "https://nft-collection-sneh1999.vercel.app/api/";
+        string memory METADATA_URL = "https://example.example";
         new CryptoDevs(METADATA_URL, whitelistAddress);
     }
 }
