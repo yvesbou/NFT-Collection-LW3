@@ -50,6 +50,7 @@ const Container = styled.div`
 	align-items: flex-end;
 	justify-content: space-between;
 	padding: 1rem;
+	height: 80px;
 `
 
 const SubContainer = styled.div`

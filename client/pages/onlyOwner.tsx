@@ -318,7 +318,7 @@ const OnlyOwner: NextPage = () => {
                     </WithdrawBox>
                     <PresaleBox>
                         <CardTitle>Presale Launcher</CardTitle>
-                        <WithdrawBoxEtherAmount>End: { presaleEndedDatetime?.toString() != '0' && presaleEndDatetimeString}</WithdrawBoxEtherAmount>
+                        <WithdrawBoxEtherAmount>{ presaleEndedDatetime?.toString() != '0' && `End: ${presaleEndDatetimeString}`}</WithdrawBoxEtherAmount>
                         <Button disabled={disableButton} isPermanentlyDisabled={isPresaleButtonDisabledPermanently} isLoading={isStartPresaleButtonLoading} isWaiting={isStartPresaleLoadingForApproval} onClick={()=>{startPresale?.();}}>
                             {isStartPresaleLoadingForApproval && 'Waiting for approval'}
                             {isStartPresaleButtonLoading && 'Launching 🚀...'}

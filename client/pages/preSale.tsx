@@ -40,7 +40,7 @@ const PreSale: NextPage = () => {
     } = useContractWrite(presaleMintExecuteOnChainConfig);
 
     const {
-        data:presaleMintwTxData,
+        data: presaleMintTxData,
         isSuccess: presaleMintTxSuccess,
         error: presaleMintTxError,
       } = useWaitForTransaction({
@@ -90,7 +90,7 @@ const PreSale: NextPage = () => {
         if (!isPresaleMintLoadingForApproval && !isLoadingForPresaleMintExecution) setIsPresaleMintButtonLoading(false);
     }, [isPresaleMintLoadingForApproval, isLoadingForPresaleMintExecution])
 
-    const eligibleForPresale = true;
+    const eligibleForPresale = true; // todo!!!
 
     return (
         <div className={styles.container}>
@@ -182,7 +182,7 @@ const PresaleEligibility = styled.div`
 const PresaleMintButton = styled(Button)`
     margin-top: 10px;
     margin-left: 50px;
-    border-color: tomato;
+    text-shadow: 1px 1px 10px white;
 `;
 
 

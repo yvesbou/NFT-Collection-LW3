@@ -2,7 +2,7 @@ import CryptoDevsAbi from "./abi/abi"
 
 
 const cryptoDevsConfig = {
-	addressOrName: '0xae75123c9a477ec3c02f4c2034c23aaff4ddf93e',
+	addressOrName: '0x335862ecfa52a65ea43207b6fa69f48dbe08f6c1',
 	contractInterface: CryptoDevsAbi.abi,
 };
 
