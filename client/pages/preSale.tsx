@@ -8,15 +8,23 @@ import CryptoDevsAbi from "../abi/abi"
 import { useSnackbar } from 'react-simple-snackbar'
 import failureOptions from '../components/SnackbarUIOptions/failure';
 import successOptions from '../components/SnackbarUIOptions/success';
+import Button from '../components/SmallerComponents/Button';
 
 const PreSale: NextPage = () => {
+
+    const eligibleForPresale = true;
+
     return (
         <div className={styles.container}>
             <main className={styles.main}>
                 <Navbar/>
                 <Placeholder>
                     <MintActionAndDescriptionCard>
-
+                        <MintTitle>Mint during Presale your NFT</MintTitle>
+                        <PresaleEligibility>
+                            {eligibleForPresale ? "Your are lucky! You are eligible for presale 🎉": "Sorry. You are not whitelisted for this NFT sale."}
+                        </PresaleEligibility>
+                        {eligibleForPresale && <PresaleMintButton>Mint</PresaleMintButton>}
                     </MintActionAndDescriptionCard>
                     <NFTCardPlaceholder>
                         <NFTCard><br/>Reveal<br/>Your<br/>NFT<br/>Now!</NFTCard>
@@ -52,12 +60,6 @@ const NFTCardPlaceholder = styled.div`
     flex-direction: row;
 `
 
-
-const slide = keyframes`
-    0% {transform:translateX(-100%);}
-    100% {transform:translateX(100%);}
-`;
-
 const NFTCard = styled.div`
     margin: 20px;
     padding-left: 30px;
@@ -72,34 +74,33 @@ const NFTCard = styled.div`
     border-radius: 12px;
     box-shadow: -1px 0px 10px 0px white inset;
     border-right: 0.5px solid #ffffff;
-    // border-left: 0.05px solid #ffffff;
-    
-    // &::after {
-    //     content:'';
-    //     // top:0;
-    //     position: relative;
-    //     top: 0;
-    //     left: 0;
-    //     display: block;
-    //     transform:translateX(10%);
-    //     width:50%;
-    //     // height:220px;
-    //     height: 100%;
-    //     z-index:1;
-    //     animation: ${slide} 1s infinite 3s;
-    //     background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(128,186,232,0) 99%, rgba(125,185,232,0) 100%); /* FF3.6+ */
-	//     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,255,0)), color-stop(50%,rgba(255,255,255,0.8)), color-stop(99%,rgba(128,186,232,0)), color-stop(100%,rgba(125,185,232,0))); /* Chrome,Safari4+ */
-    //     background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* Chrome10+,Safari5.1+ */
-    //     background: -o-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* Opera 11.10+ */
-    //     background: -ms-linear-gradient(left, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* IE10+ */
-    //     background: linear-gradient(to right, rgba(255,255,255,0) 0%,rgba(255,255,255,0.8) 50%,rgba(128,186,232,0) 99%,rgba(125,185,232,0) 100%); /* W3C */
-    // }
+`
 
+const MintTitle = styled.div`
+    margin: 20px;
+    padding-left: 30px;
+    padding-top: 50px;
+    font-size: 44px;
+    font-weight: 900;
+    color: white;
+    text-shadow: 1px 1px 20px violet;
 
 `
 
+const PresaleEligibility = styled.div`
+    margin: 20px;
+    padding-left: 30px;
+    font-size: 20px;
+    font-weight: 600;
+    color: white;
+    text-shadow: 1px 1px 10px white;
+`
 
-
+const PresaleMintButton = styled(Button)`
+    margin-top: 10px;
+    margin-left: 50px;
+    border-color: tomato;
+`;
 
 
 export default PreSale;
