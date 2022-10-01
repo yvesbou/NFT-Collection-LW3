@@ -110,7 +110,7 @@ const Hero: FC = () => {
         var presaleEndDateTimeNum: number | undefined = presaleEndDatetimeString ? parseInt(presaleEndDatetimeString) : undefined;
         presaleEndDateTimeNum ? presaleEndDateTimeNum *= 1000 : undefined;
         setPresaleIsOver(dayjs(presaleEndDateTimeNum).isBefore(dayjs()));
-    },)
+    },[timestampEndPresale])
     
     return (
         <Container>

@@ -58,7 +58,7 @@ const OnlyOwner: NextPage = () => {
 			const isOwner = address === ownerAddress.toString();
 			setIsOwner(isOwner);
 		}
-	}, [ownerAddress])
+	}, [address, ownerAddress])
 
     /// wagmi hooks ///
 
@@ -301,7 +301,7 @@ const OnlyOwner: NextPage = () => {
                 <Navbar/>
                 <InfoPlaceholder>
                     <Info>
-                        This is the "Only Owner Page" which is only visible to {address?.slice(0,5)}...{address?.slice(-4,address.length)}, the address which deployed the smart contracts.
+                        This is the &quot;Only Owner Page&quot; which is only visible to {address?.slice(0,5)}...{address?.slice(-4,address.length)}, the address which deployed the smart contracts.
                     </Info>
                 </InfoPlaceholder>
                 {
@@ -309,7 +309,7 @@ const OnlyOwner: NextPage = () => {
                 <Grid>
                     <WithdrawBox>
                         <CardTitle>Total Received Ether</CardTitle>
-                        <WithdrawBoxEtherSymbolPlaceholder><Image src="/ethereum-eth-logo.svg" width="30" height="30"></Image></WithdrawBoxEtherSymbolPlaceholder>
+                        <WithdrawBoxEtherSymbolPlaceholder><Image alt="ethereum-logo" src="/ethereum-eth-logo.svg" width="30" height="30"></Image></WithdrawBoxEtherSymbolPlaceholder>
                         <WithdrawBoxEtherAmount> {balanceData?.formatted} {balanceData?.symbol}</WithdrawBoxEtherAmount>
                         <Button disabled={disableButton} isLoading={isWithdrawButtonLoading} isWaiting={isWithdrawLoadingForApproval} onClick={()=>{withdraw?.();}}>
                             {isWithdrawLoadingForApproval && 'Waiting for approval'}

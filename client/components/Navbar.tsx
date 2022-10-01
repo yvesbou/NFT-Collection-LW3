@@ -29,7 +29,7 @@ const Navbar: FC = () => {
 			const isOwner = address === ownerAddress.toString();
 			setIsOwner(isOwner);
 		}
-	  }, [ownerAddress])
+	  }, [address, ownerAddress])
 
     return (
 		<Container>
