@@ -19,7 +19,7 @@ const PreSale: NextPage = () => {
 
                     </MintActionAndDescriptionCard>
                     <NFTCardPlaceholder>
-                        <NFTCard></NFTCard>
+                        <NFTCard><br/>Reveal<br/>Your<br/>NFT<br/>Now!</NFTCard>
                     </NFTCardPlaceholder>
                 </Placeholder>
             </main>
@@ -60,12 +60,19 @@ const slide = keyframes`
 
 const NFTCard = styled.div`
     margin: 20px;
+    padding-left: 30px;
+    padding-top: 10px;
     width 40%;
-    background: black;
+    color: white;
+    text-shadow: 1px 1px 10px #FFF;
+    white-space: pre-wrap;
+    font-size: 44px;
+    font-weight: 900;
+    background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 24%, rgba(0,0,0,1) 38%, rgba(11,11,11,1) 63%, rgba(28,28,28,1) 87%, rgba(40,40,40,1) 96%);
     border-radius: 12px;
-    box-shadow: 0px 0px 10px 0px white inset;
-    border-right: 1px solid #ffffff;
-    border-left: 1px solid #ffffff;
+    box-shadow: -1px 0px 10px 0px white inset;
+    border-right: 0.5px solid #ffffff;
+    // border-left: 0.05px solid #ffffff;
     
     // &::after {
     //     content:'';
