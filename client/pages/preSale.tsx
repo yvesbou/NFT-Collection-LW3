@@ -66,6 +66,13 @@ const PreSale: NextPage = () => {
     });
 
     useEffect(() => {
+      console.log(presaleMintError)
+      console.log(presaleMintTxError)
+
+    }, )
+    
+
+    useEffect(() => {
         if (presaleMintError) setIsLoadingForPresaleMintExecution(false);
     }, [presaleMintError])
 

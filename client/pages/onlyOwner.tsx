@@ -22,7 +22,7 @@ const OnlyOwner: NextPage = () => {
 	const { address, isConnected } = useAccount();
 
     const { data: balanceData, isError: balanceError, isLoading: balanceIsLoading } = useBalance({
-        addressOrName: '0x997906e53deb18c25faf8f8762544e2ad78669b6',
+        addressOrName: cryptoDevsConfig.addressOrName,
         watch: true
     })
     
