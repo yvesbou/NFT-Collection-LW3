@@ -16,6 +16,8 @@ const Hero: FC = () => {
 
 	const { address, isConnected } = useAccount();
 
+    const [mintSuccessful, setMintSuccessful] = useState(false);
+
     const { data: nftsMinted } = useContractRead({
 		...cryptoDevsConfig,
 		functionName: 'tokenIds',
@@ -81,15 +83,17 @@ const Hero: FC = () => {
         },
     });
 
+    useEffect(() => {
+        // if approval is about to happen, waiting for execution also starts
+        if (isMintLoadingForApproval) {
+            setMintSuccessful(false);
+            setIsLoadingForMintExecution(true);
+        }
+    }, [isMintLoadingForApproval])
 
     useEffect(() => {
         if (mintError) setIsLoadingForMintExecution(false);
     }, [mintError])
-
-    useEffect(() => {
-        // if approval is about to happen, waiting for execution also starts
-        if (isMintLoadingForApproval) setIsLoadingForMintExecution(true);
-    }, [isMintLoadingForApproval])
 
     useEffect(() => {
         // beginning of a new transaction
@@ -131,7 +135,12 @@ const Hero: FC = () => {
                         </PresaleMintButton>}
                 </MintActionAndDescriptionCard>
                 <NFTCardPlaceholder>
-                    <NFTCard><br/>Reveal<br/>Your<br/>NFT<br/>Now!</NFTCard>
+                    <NFTCard hasToRotate={mintSuccessful}>
+                        <NFTCardInner hasToRotate={mintSuccessful}>
+                            <NFTCardFront><br/>Reveal<br/>Your<br/>NFT<br/>Now!</NFTCardFront>
+                            <NFTCardBack><br/>Your<br/>NFT<br/>is<br/>revealed!</NFTCardBack>
+                        </NFTCardInner>
+                    </NFTCard>
                 </NFTCardPlaceholder>
             </Placeholder>
         </Container>)
@@ -190,7 +199,11 @@ const NFTCardPlaceholder = styled.div`
     flex-direction: row;
 `
 
-const NFTCard = styled.div`
+interface INFTCard {
+    hasToRotate?: boolean;
+  }
+
+const NFTCard = styled.div<INFTCard>`
     margin: 20px;
     padding-left: 30px;
     padding-top: 10px;
@@ -200,10 +213,40 @@ const NFTCard = styled.div`
     white-space: pre-wrap;
     font-size: 44px;
     font-weight: 900;
+    background-color: transparent;
+    perspective: 1000px;
+`
+
+const NFTCardInner = styled.div<INFTCard>`
     background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 24%, rgba(0,0,0,1) 38%, rgba(11,11,11,1) 63%, rgba(28,28,28,1) 87%, rgba(40,40,40,1) 96%);
     border-radius: 12px;
     box-shadow: -1px 0px 10px 0px white inset;
     border-right: 0.5px solid #ffffff;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    ${ ({hasToRotate}) => hasToRotate && `
+        transform: rotateY(180deg);
+    `}
+`
+const NFTCardFront = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+`
+const NFTCardBack = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+    color: white;
+    transform: rotateY(180deg);
 `
 
 const MintTitle = styled.div`
