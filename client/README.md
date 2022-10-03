@@ -1,4 +1,14 @@
-This is a [RainbowKit](https://rainbowkit.com) + [wagmi](https://wagmi.sh) + [Next.js](https://nextjs.org/) project bootstrapped with [`create-rainbowkit`](https://github.com/rainbow-me/rainbowkit/tree/main/packages/create-rainbowkit).
+# NFT Minting Page with Admin Dashbaord
+This frontend was build with [RainbowKit](https://rainbowkit.com) + [wagmi](https://wagmi.sh) + [Next.js](https://nextjs.org/) project bootstrapped with [`create-rainbowkit`](https://github.com/rainbow-me/rainbowkit/tree/main/packages/create-rainbowkit).
+
+## Some Snapshots
+![Alt text](images/Hero.png?raw=true "Hero")
+![Alt text](images/Mint.png?raw=true "Mint Section")
+![Alt text](images/Mint_waiting_for_approval.png?raw=true "Mint Waiting for Approval")
+![Alt text](images/Mint_loading.png?raw=true "Mint Loading")
+![Alt text](images/Mint_successful.png?raw=true "Mint Successful")
+![Alt text](images/Owner_Dashboard.png?raw=true "Owner Dashboard")
+![Alt text](images/Presale_Mint.png?raw=true "Presale Mint")
 
 ## Getting Started
 
@@ -53,23 +63,10 @@ const contractConfig = {
 };
 ```
 
-## Learn More About Rainbowkit, Wagmi and NextJS
-
-To learn more about this stack, take a look at the following resources:
-
-- [RainbowKit Documentation](https://rainbowkit.com) - Learn how to customize your wallet connection flow.
-- [wagmi Documentation](https://wagmi.sh) - Learn how to interact with Ethereum.
-- [Next.js Documentation](https://nextjs.org/docs) - Learn how to build a Next.js application.
-
-You can check out [the RainbowKit GitHub repository](https://github.com/rainbow-me/rainbowkit) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
 ## Use Styled Components for Styling
+
+For organising CSS this project uses `Styled Components`.
+
 Styled components requires a `.babelrc` file when used with NextJs app.
 
 Add the following content to the `.babelrc` file.
